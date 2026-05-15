@@ -15,7 +15,7 @@ export type Amenity =
   | 'Loading access' | 'High-speed Wi-Fi' | 'Makeup room' | 'Bathroom'
   | 'Air conditioning' | 'Security' | 'Power access' | 'Blackout capability' | 'Outdoor area';
 
-export type Badge = 'Verified' | 'Instant Request' | 'Great Natural Light' | 'Music Video Friendly' | 'Host Favorite';
+export type Badge = 'Verified' | 'Instant Request' | 'Great Natural Light' | 'Music Video Friendly' | 'Host Favorite' | 'Affordable';
 
 export interface Listing {
   id: string;
