@@ -9,16 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft",
+        default: "bg-foreground text-background hover:bg-foreground/90 shadow-soft",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-foreground/15 bg-background/60 backdrop-blur hover:bg-foreground hover:text-background",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-foreground/5",
-        link: "text-primary underline-offset-4 hover:underline rounded-none",
-        hero: "bg-gradient-sunset text-white shadow-glow-coral hover:shadow-float hover:-translate-y-0.5",
-        cobalt: "bg-gradient-cobalt text-white shadow-glow-cobalt hover:shadow-float hover:-translate-y-0.5",
-        glass: "glass text-foreground hover:bg-white/90",
-        gold: "bg-gold text-gold-foreground hover:brightness-110 shadow-soft",
+        outline: "border border-white/15 bg-white/5 backdrop-blur text-foreground hover:bg-white/10 hover:border-white/25",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-white/5",
+        ghost: "text-foreground hover:bg-white/8",
+        link: "text-foreground underline-offset-4 hover:underline rounded-none",
+        hero: "glossy bg-gradient-sunset text-white shadow-glow-coral hover:shadow-float hover:-translate-y-0.5 border border-white/15",
+        cobalt: "glossy bg-gradient-cobalt text-white shadow-glow-cobalt hover:shadow-float hover:-translate-y-0.5 border border-white/15",
+        glass: "glass text-foreground hover:bg-white/12 border-white/15",
+        gold: "glossy bg-gold text-gold-foreground hover:brightness-110 shadow-glow-gold border border-white/20",
+        lilac: "glossy bg-gradient-lilac text-white shadow-card hover:-translate-y-0.5 border border-white/15",
       },
       size: {
         default: "h-11 px-5 py-2",
