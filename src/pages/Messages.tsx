@@ -37,24 +37,23 @@ const Messages = () => {
   return (
     <PageShell>
       <div className="container-tight">
-        <span className="editorial-eyebrow">Messages</span>
+        <span className="editorial-eyebrow text-coral">Messages</span>
         <h1 className="mt-2 font-display text-3xl sm:text-4xl font-semibold mb-6">Talk to your hosts.</h1>
 
-        <div className="grid md:grid-cols-[320px_1fr] gap-4 h-[70vh] rounded-3xl border border-border bg-card overflow-hidden shadow-card">
-          {/* Conversations list */}
-          <aside className="border-r border-border overflow-y-auto">
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center gap-2 px-3 h-10 rounded-full bg-secondary">
+        <div className="grid md:grid-cols-[320px_1fr] gap-4 h-[70vh] rounded-3xl widget overflow-hidden">
+          <aside className="border-r border-white/10 overflow-y-auto">
+            <div className="p-4 border-b border-white/10">
+              <div className="flex items-center gap-2 px-3 h-10 rounded-full bg-white/5 border border-white/10">
                 <Search size={14} className="text-muted-foreground" />
                 <input placeholder="Search messages" className="bg-transparent outline-none text-sm w-full" />
               </div>
             </div>
             {conversations.map((c) => (
               <button key={c.id} onClick={() => setActive(c)} className={cn(
-                "w-full text-left p-4 flex gap-3 border-b border-border hover:bg-secondary/50 transition-colors",
-                active.id === c.id && "bg-secondary/60"
+                "w-full text-left p-4 flex gap-3 border-b border-white/8 hover:bg-white/5 transition-colors",
+                active.id === c.id && "bg-white/8"
               )}>
-                <img src={c.host.avatar} alt="" className="h-11 w-11 rounded-full object-cover" />
+                <img src={c.host.avatar} alt="" className="h-11 w-11 rounded-full object-cover ring-2 ring-white/15" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold text-sm truncate">{c.host.name}</p>
@@ -63,30 +62,32 @@ const Messages = () => {
                   <p className="text-xs text-muted-foreground truncate">{c.listing.title}</p>
                   <p className="text-xs mt-1 truncate">{c.preview}</p>
                 </div>
-                {c.unread && <span className="h-2 w-2 rounded-full bg-coral mt-1.5 shrink-0" />}
+                {c.unread && <span className="h-2 w-2 rounded-full bg-coral mt-1.5 shrink-0 animate-pulse-glow" />}
               </button>
             ))}
           </aside>
 
-          {/* Thread */}
           <section className="flex flex-col">
-            <header className="flex items-center gap-3 p-4 border-b border-border">
-              <img src={active.host.avatar} alt="" className="h-10 w-10 rounded-full" />
+            <header className="flex items-center gap-3 p-4 border-b border-white/10">
+              <img src={active.host.avatar} alt="" className="h-10 w-10 rounded-full ring-2 ring-white/15" />
               <div className="flex-1">
                 <p className="font-semibold text-sm">{active.host.name}</p>
                 <p className="text-xs text-muted-foreground">{active.listing.title}</p>
               </div>
-              <Button variant="outline" size="sm"><Phone size={14} /> WhatsApp</Button>
+              <Button variant="glass" size="sm"><Phone size={14} /> WhatsApp</Button>
             </header>
-            <div className="flex-1 overflow-y-auto p-6 space-y-3 bg-gradient-cream">
+            <div className="flex-1 overflow-y-auto p-6 space-y-3 bg-gradient-night">
               {thread.map((m, i) => (
-                <div key={i} className={cn("max-w-[75%] px-4 py-2.5 rounded-3xl text-sm", m.from === "me" ? "ml-auto bg-gradient-cobalt text-white rounded-br-md" : "bg-card border border-border rounded-bl-md")}>
+                <div key={i} className={cn("max-w-[75%] px-4 py-2.5 rounded-3xl text-sm border",
+                  m.from === "me"
+                    ? "ml-auto bg-gradient-cobalt text-white rounded-br-md border-white/15 glossy"
+                    : "bg-white/5 border-white/10 rounded-bl-md")}>
                   {m.text}
                 </div>
               ))}
             </div>
-            <form onSubmit={send} className="p-4 border-t border-border flex gap-2">
-              <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Write a message…" className="flex-1 h-12 px-4 rounded-full border border-border bg-background outline-none focus:border-foreground" />
+            <form onSubmit={send} className="p-4 border-t border-white/10 flex gap-2">
+              <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Write a message…" className="flex-1 h-12 px-4 rounded-full bg-white/5 border border-white/10 outline-none focus:border-cobalt text-foreground" />
               <Button type="submit" variant="hero" size="icon"><Send size={16} /></Button>
             </form>
           </section>

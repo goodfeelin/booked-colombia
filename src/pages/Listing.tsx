@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";
 import { LISTINGS, formatCOP } from "@/data/listings";
 import { ListingCard } from "@/components/ListingCard";
+import { ProductionIntelligence } from "@/components/ProductionIntelligence";
 import { Button } from "@/components/ui/button";
 import { Star, Users, MapPin, Sun, Volume2, Wifi, Zap, Car, Camera, Heart, Share2, Shield, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -34,7 +35,7 @@ const Listing = () => {
         {/* Title */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <div>
-            <span className="editorial-eyebrow">{listing.type}</span>
+            <span className="editorial-eyebrow text-coral">{listing.type}</span>
             <h1 className="mt-1 font-display text-4xl sm:text-5xl font-semibold">{listing.title}</h1>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1"><Star size={14} className="fill-gold stroke-gold" /> {listing.rating} · {listing.reviewCount} reviews</span>
@@ -43,13 +44,13 @@ const Listing = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm"><Heart size={14} /> Save</Button>
-            <Button variant="outline" size="sm"><Share2 size={14} /> Share</Button>
+            <Button variant="glass" size="sm"><Heart size={14} /> Save</Button>
+            <Button variant="glass" size="sm"><Share2 size={14} /> Share</Button>
           </div>
         </div>
 
         {/* Gallery */}
-        <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[60vh] rounded-3xl overflow-hidden">
+        <div className="grid grid-cols-4 grid-rows-2 gap-2 sm:gap-3 h-[55vh] sm:h-[60vh] rounded-3xl overflow-hidden border border-white/10">
           <div className="col-span-4 md:col-span-2 row-span-2 relative">
             <img src={listing.gallery[0]} alt={listing.title} className="absolute inset-0 h-full w-full object-cover" />
           </div>
@@ -63,28 +64,50 @@ const Listing = () => {
         <div className="grid lg:grid-cols-[1fr_400px] gap-10 mt-10">
           <div>
             {/* Host */}
-            <div className="flex items-center gap-4 pb-8 border-b border-border">
-              <img src={listing.host.avatar} alt={listing.host.name} className="h-14 w-14 rounded-full object-cover" />
+            <div className="flex items-center gap-4 pb-8 border-b border-white/10">
+              <img src={listing.host.avatar} alt={listing.host.name} className="h-14 w-14 rounded-full object-cover ring-2 ring-white/15" />
               <div className="flex-1">
-                <p className="font-semibold">Hosted by {listing.host.name}{listing.host.superhost && <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gradient-sunset text-white">Superhost</span>}</p>
+                <p className="font-semibold">
+                  Hosted by {listing.host.name}
+                  {listing.host.superhost && (
+                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-gradient-sunset text-white font-bold uppercase tracking-wider glossy">Superhost</span>
+                  )}
+                </p>
                 <p className="text-sm text-muted-foreground">Verified host · Responds within 1 hour · WhatsApp available</p>
               </div>
             </div>
 
             {/* Description */}
-            <section className="py-8 border-b border-border">
-              <p className="text-lg leading-relaxed">{listing.description}</p>
+            <section className="py-8 border-b border-white/10">
+              <p className="text-lg leading-relaxed text-foreground/90">{listing.description}</p>
               <div className="flex flex-wrap gap-2 mt-5">
                 {listing.styleTags.map((t) => (
-                  <span key={t} className="text-xs px-3 py-1.5 rounded-full bg-secondary border border-border">{t}</span>
+                  <span key={t} className="text-xs px-3 py-1.5 rounded-full glass border-white/10">{t}</span>
                 ))}
               </div>
             </section>
 
+            {/* Production Intelligence preview */}
+            <section className="py-8 border-b border-white/10">
+              <ProductionIntelligence
+                compact
+                title="Shoot conditions for this space"
+                subtitle={date ? `Forecast for ${date}` : "Pick a date in the booking widget — we'll preview live conditions."}
+                data={{
+                  location: `${listing.neighborhood}, ${listing.city}`,
+                  weather: { label: "Partly cloudy", tempC: 24 },
+                  goldenHour: listing.details.bestLightHours,
+                  rainRiskPct: 22,
+                  lightQuality: listing.details.naturalLight === "Excellent" ? "Excellent" : "Good",
+                  crewReadyPct: 88,
+                }}
+              />
+            </section>
+
             {/* Production Details */}
-            <section className="py-8 border-b border-border">
+            <section className="py-8 border-b border-white/10">
               <h2 className="font-display text-2xl font-semibold mb-5">Production details</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <Detail icon={Sun} label="Natural light" value={listing.details.naturalLight} />
                 <Detail icon={Sun} label="Best light hours" value={listing.details.bestLightHours} />
                 <Detail icon={Volume2} label="Noise" value={listing.details.noise} />
@@ -98,19 +121,19 @@ const Listing = () => {
             </section>
 
             {/* Amenities */}
-            <section className="py-8 border-b border-border">
+            <section className="py-8 border-b border-white/10">
               <h2 className="font-display text-2xl font-semibold mb-5">Amenities</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {listing.amenities.map((a) => (
                   <div key={a} className="flex items-center gap-2 text-sm">
-                    <span className="h-2 w-2 rounded-full bg-coral" />{a}
+                    <span className="h-2 w-2 rounded-full bg-coral shadow-glow-coral" />{a}
                   </div>
                 ))}
               </div>
             </section>
 
             {/* Rules */}
-            <section className="py-8 border-b border-border">
+            <section className="py-8 border-b border-white/10">
               <h2 className="font-display text-2xl font-semibold mb-4">House rules</h2>
               <ul className="space-y-2 text-muted-foreground">
                 {listing.rules.map((r) => <li key={r} className="flex gap-2"><Shield size={16} className="text-cobalt mt-0.5 shrink-0" />{r}</li>)}
@@ -118,22 +141,25 @@ const Listing = () => {
             </section>
 
             {/* Map placeholder */}
-            <section className="py-8 border-b border-border">
+            <section className="py-8 border-b border-white/10">
               <h2 className="font-display text-2xl font-semibold mb-4">Where you'll shoot</h2>
-              <div className="aspect-[16/9] rounded-3xl bg-gradient-to-br from-cobalt/10 via-secondary to-coral/10 border border-border flex items-center justify-center text-muted-foreground">
-                <span className="inline-flex items-center gap-2"><MapPin size={18} /> {listing.neighborhood}, {listing.city} (map preview)</span>
+              <div className="aspect-[16/9] rounded-3xl widget flex items-center justify-center text-muted-foreground relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-glow opacity-50" />
+                <span className="relative inline-flex items-center gap-2"><MapPin size={18} /> {listing.neighborhood}, {listing.city} · map preview</span>
               </div>
             </section>
 
             {/* Reviews */}
             <section className="py-8">
-              <h2 className="font-display text-2xl font-semibold mb-6"><Star className="inline fill-gold stroke-gold mb-1" size={22} /> {listing.rating} · {listing.reviewCount} reviews</h2>
-              <div className="grid sm:grid-cols-2 gap-5">
+              <h2 className="font-display text-2xl font-semibold mb-6">
+                <Star className="inline fill-gold stroke-gold mb-1" size={22} /> {listing.rating} · {listing.reviewCount} reviews
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-4">
                 {[
                   { n: "Valentina · Music video", q: "Light was unreal at 5pm. Host moved furniture without us asking. 10/10." },
                   { n: "Juanca · Editorial", q: "Cinematic from any angle. Already booked for our next campaign." },
                 ].map((r) => (
-                  <div key={r.n} className="p-5 rounded-2xl bg-card border border-border">
+                  <div key={r.n} className="p-5 rounded-2xl widget">
                     <div className="flex gap-0.5 mb-2">{Array.from({ length: 5 }).map((_, i) => <Star key={i} size={12} className="fill-gold stroke-gold" />)}</div>
                     <p className="text-sm">"{r.q}"</p>
                     <p className="text-xs text-muted-foreground mt-3">{r.n}</p>
@@ -145,7 +171,7 @@ const Listing = () => {
 
           {/* Booking widget */}
           <aside className="lg:sticky lg:top-28 self-start">
-            <div className="rounded-3xl bg-card border border-border shadow-card p-6">
+            <div className="rounded-3xl widget p-6">
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-3xl font-semibold">{formatCOP(listing.hourlyCop)}</span>
                 <span className="text-muted-foreground">/ hour</span>
@@ -154,12 +180,12 @@ const Listing = () => {
 
               <div className="mt-5 space-y-3">
                 <label className="block">
-                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Date</span>
-                  <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 w-full h-11 px-4 rounded-2xl border border-border bg-background" />
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Date</span>
+                  <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inp} />
                 </label>
                 <label className="block">
-                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Hours (min {listing.minHours})</span>
-                  <input type="number" min={listing.minHours} value={hours} onChange={(e) => setHours(Math.max(listing.minHours, Number(e.target.value)))} className="mt-1 w-full h-11 px-4 rounded-2xl border border-border bg-background" />
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Hours (min {listing.minHours})</span>
+                  <input type="number" min={listing.minHours} value={hours} onChange={(e) => setHours(Math.max(listing.minHours, Number(e.target.value)))} className={inp} />
                 </label>
               </div>
 
@@ -167,7 +193,7 @@ const Listing = () => {
                 <Row label={`${formatCOP(listing.hourlyCop)} × ${hours}h`} value={formatCOP(subtotal)} />
                 <Row label="Cleaning fee" value={formatCOP(listing.cleaningFeeCop)} />
                 <Row label="Booked service fee (12%)" value={formatCOP(fee)} />
-                <div className="border-t border-border pt-3 mt-3 flex justify-between font-semibold text-base">
+                <div className="border-t border-white/10 pt-3 mt-3 flex justify-between font-semibold text-base text-foreground">
                   <span>Total (COP)</span><span>{formatCOP(total)}</span>
                 </div>
               </div>
@@ -183,17 +209,17 @@ const Listing = () => {
         {/* Similar */}
         <section className="py-20">
           <h2 className="font-display text-3xl font-semibold mb-8">Similar spaces</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {similar.map((l) => <ListingCard key={l.id} listing={l} />)}
           </div>
         </section>
       </div>
 
       {/* Mobile sticky booking */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-border p-3 flex items-center justify-between gap-3">
-        <div>
-          <div className="font-semibold">{formatCOP(listing.hourlyCop)} <span className="text-xs text-muted-foreground">/h</span></div>
-          <div className="text-xs text-muted-foreground">min {listing.minHours}h</div>
+      <div className="lg:hidden fixed bottom-28 inset-x-3 z-40 glass-strong rounded-2xl border-white/10 p-3 flex items-center justify-between gap-3 shadow-float">
+        <div className="pl-2">
+          <div className="font-semibold text-foreground">{formatCOP(listing.hourlyCop)} <span className="text-xs text-muted-foreground">/h</span></div>
+          <div className="text-[10px] text-muted-foreground">min {listing.minHours}h</div>
         </div>
         <Link to={`/checkout/${listing.id}`} className="flex-1"><Button variant="hero" className="w-full">Request to book</Button></Link>
       </div>
@@ -201,16 +227,18 @@ const Listing = () => {
   );
 };
 
+const inp = "mt-1 w-full h-11 px-4 rounded-2xl bg-white/5 border border-white/10 text-foreground outline-none focus:border-cobalt transition-colors";
+
 const Detail = ({ icon: Icon, label, value }: { icon: any; label: string; value: string }) => (
-  <div className="p-4 rounded-2xl bg-card border border-border">
+  <div className="p-4 rounded-2xl widget">
     <Icon size={16} className="text-cobalt" />
-    <div className="text-xs text-muted-foreground mt-2">{label}</div>
-    <div className="font-medium text-sm">{value}</div>
+    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2 font-semibold">{label}</div>
+    <div className="font-medium text-sm mt-0.5">{value}</div>
   </div>
 );
 
 const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between text-muted-foreground"><span>{label}</span><span>{value}</span></div>
+  <div className="flex justify-between text-muted-foreground"><span>{label}</span><span className="text-foreground">{value}</span></div>
 );
 
 export default Listing;
