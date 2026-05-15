@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Calendar, Users, Camera, Search } from "lucide-react";
+import { MapPin, Calendar, Camera, Users, Wallet, Search } from "lucide-react";
 import { CITIES, PRODUCTION_TYPES } from "@/data/listings";
 import { Button } from "@/components/ui/button";
 
-export const SearchBar = ({ compact = false }: { compact?: boolean }) => {
+export const SearchBar = () => {
   const navigate = useNavigate();
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
   const [production, setProduction] = useState("");
   const [crew, setCrew] = useState("");
+  const [budget, setBudget] = useState("");
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,39 +18,59 @@ export const SearchBar = ({ compact = false }: { compact?: boolean }) => {
     if (city) params.set("city", city);
     if (production) params.set("production", production);
     if (crew) params.set("crew", crew);
+    if (budget) params.set("max", budget);
     navigate(`/browse?${params.toString()}`);
   };
 
   return (
-    <form onSubmit={submit} className={`glass rounded-full shadow-float p-2 grid grid-cols-1 ${compact ? "md:grid-cols-[1.2fr_1fr_1.2fr_0.8fr_auto]" : "md:grid-cols-[1.2fr_1fr_1.3fr_0.9fr_auto]"} gap-1 items-stretch`}>
-      <Field icon={<MapPin size={16} />} label="City">
-        <select value={city} onChange={(e) => setCity(e.target.value)} className="bg-transparent outline-none w-full text-sm font-medium">
-          <option value="">Anywhere in Colombia</option>
-          {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-      </Field>
-      <Field icon={<Calendar size={16} />} label="Date">
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-transparent outline-none w-full text-sm font-medium" />
-      </Field>
-      <Field icon={<Camera size={16} />} label="Production">
-        <select value={production} onChange={(e) => setProduction(e.target.value)} className="bg-transparent outline-none w-full text-sm font-medium">
-          <option value="">Any project</option>
-          {PRODUCTION_TYPES.map((p) => <option key={p} value={p}>{p}</option>)}
-        </select>
-      </Field>
-      <Field icon={<Users size={16} />} label="Crew">
-        <input type="number" min={1} placeholder="Crew size" value={crew} onChange={(e) => setCrew(e.target.value)} className="bg-transparent outline-none w-full text-sm font-medium placeholder:text-muted-foreground" />
-      </Field>
-      <Button type="submit" variant="hero" size="lg" className="rounded-full">
-        <Search size={18} /> <span className="hidden sm:inline">Search</span>
+    <form
+      onSubmit={submit}
+      className="glass-strong rounded-[28px] p-3 sm:p-4 shadow-float w-full"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+        <Field icon={<MapPin size={15} />} label="Location">
+          <select value={city} onChange={(e) => setCity(e.target.value)} className={selectCls}>
+            <option value="">Anywhere in Colombia</option>
+            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </Field>
+        <Field icon={<Calendar size={15} />} label="Date">
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} />
+        </Field>
+        <Field icon={<Camera size={15} />} label="Production">
+          <select value={production} onChange={(e) => setProduction(e.target.value)} className={selectCls}>
+            <option value="">Any project</option>
+            {PRODUCTION_TYPES.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </Field>
+        <Field icon={<Users size={15} />} label="Crew">
+          <input type="number" min={1} placeholder="e.g. 8" value={crew} onChange={(e) => setCrew(e.target.value)} className={inputCls} />
+        </Field>
+        <Field icon={<Wallet size={15} />} label="Max budget / hr">
+          <select value={budget} onChange={(e) => setBudget(e.target.value)} className={selectCls}>
+            <option value="">Any budget</option>
+            <option value="150000">Under $150K COP</option>
+            <option value="300000">Under $300K COP</option>
+            <option value="500000">Under $500K COP</option>
+            <option value="1000000">Premium $500K+</option>
+          </select>
+        </Field>
+      </div>
+      <Button type="submit" variant="hero" size="lg" className="w-full mt-3 h-14 text-base">
+        <Search size={18} /> Search locations
       </Button>
     </form>
   );
 };
 
+const inputCls = "bg-transparent outline-none w-full text-sm font-semibold text-foreground placeholder:text-muted-foreground";
+const selectCls = inputCls + " appearance-none cursor-pointer";
+
 const Field = ({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) => (
-  <label className="rounded-full px-5 py-2 hover:bg-foreground/5 transition-colors cursor-text flex flex-col justify-center min-w-0">
-    <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground inline-flex items-center gap-1.5">{icon}{label}</span>
+  <label className="rounded-2xl px-4 py-2.5 bg-white/5 hover:bg-white/8 border border-white/8 transition-colors cursor-text flex flex-col justify-center min-w-0">
+    <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground inline-flex items-center gap-1.5 font-semibold">
+      {icon}{label}
+    </span>
     <span className="mt-0.5 truncate">{children}</span>
   </label>
 );

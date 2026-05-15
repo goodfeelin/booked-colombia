@@ -1,20 +1,18 @@
 import { Link, NavLink } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Search, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const links = [
   { to: "/browse", label: "Explore" },
-  { to: "/host/new", label: "Become a host" },
+  { to: "/dashboard", label: "Bookings" },
   { to: "/messages", label: "Messages" },
-  { to: "/dashboard", label: "Trips" },
+  { to: "/host/dashboard", label: "Host" },
 ];
 
 export const Navbar = () => {
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -26,22 +24,22 @@ export const Navbar = () => {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-500",
-        scrolled ? "py-3" : "py-5",
+        scrolled ? "py-3" : "py-5"
       )}
     >
       <div className="container-tight">
         <div
           className={cn(
-            "flex items-center justify-between rounded-full px-4 sm:px-6 transition-all duration-500",
-            scrolled ? "glass shadow-card h-14" : "bg-transparent h-16",
+            "flex items-center justify-between rounded-full px-3 sm:px-5 transition-all duration-500 border border-white/10",
+            scrolled ? "glass-strong h-14 shadow-card" : "glass h-16"
           )}
         >
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-sunset shadow-glow-coral">
-              <span className="font-display text-white text-lg leading-none">B</span>
+          <Link to="/" className="flex items-center gap-2.5 group pl-2">
+            <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-sunset shadow-glow-coral border border-white/20 glossy">
+              <span className="font-display text-white text-lg leading-none font-bold">B</span>
             </span>
-            <span className="font-display text-xl font-semibold tracking-tight">Booked</span>
-            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.2em] text-muted-foreground ml-1">CO</span>
+            <span className="font-display text-xl font-semibold tracking-tight text-foreground">Booked</span>
+            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground ml-1">CO</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -52,7 +50,9 @@ export const Navbar = () => {
                 className={({ isActive }) =>
                   cn(
                     "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                    isActive ? "bg-foreground text-background" : "hover:bg-foreground/5",
+                    isActive
+                      ? "bg-white/10 text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   )
                 }
               >
@@ -63,40 +63,20 @@ export const Navbar = () => {
 
           <div className="flex items-center gap-2">
             <Link to="/browse" className="md:hidden">
-              <Button variant="ghost" size="icon" aria-label="Search"><Search /></Button>
+              <Button variant="glass" size="icon" aria-label="Search">
+                <Search />
+              </Button>
+            </Link>
+            <Link to="/host/new" className="hidden md:block">
+              <Button variant="glass" size="sm">
+                <Sparkles size={14} /> List your space
+              </Button>
             </Link>
             <Link to="/auth" className="hidden sm:block">
               <Button variant="hero" size="sm">Sign in</Button>
             </Link>
-            <button
-              onClick={() => setOpen(!open)}
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-background"
-              aria-label="Menu"
-            >
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
           </div>
         </div>
-
-        {open && (
-          <div className="md:hidden mt-3 glass rounded-3xl p-4 shadow-card animate-fade-up">
-            {links.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  cn("block px-4 py-3 rounded-2xl font-medium", isActive ? "bg-foreground text-background" : "hover:bg-foreground/5")
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
-            <Link to="/auth" onClick={() => setOpen(false)} className="block mt-2">
-              <Button variant="hero" className="w-full">Sign in</Button>
-            </Link>
-          </div>
-        )}
       </div>
     </header>
   );
