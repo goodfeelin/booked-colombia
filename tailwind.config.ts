@@ -28,6 +28,8 @@ export default {
         coral: { DEFAULT: "hsl(var(--coral))", foreground: "hsl(var(--coral-foreground))" },
         gold: { DEFAULT: "hsl(var(--gold))", foreground: "hsl(var(--gold-foreground))" },
         lilac: { DEFAULT: "hsl(var(--lilac))", foreground: "hsl(var(--lilac-foreground))" },
+        pink: "hsl(var(--pink))",
+        orange: "hsl(var(--orange))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
