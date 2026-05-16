@@ -8,16 +8,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const QUICK_CATS = [
-  { key: "", label: "All Spaces", icon: "✨" },
-  { key: "Apartment", label: "Apartments", icon: "🏙️" },
+  { key: "", label: "Todas", icon: "✨" },
+  { key: "Apartment", label: "Apartamentos", icon: "🏙️" },
   { key: "Rooftop", label: "Rooftops", icon: "🌆" },
-  { key: "Studio", label: "Studios", icon: "📸" },
+  { key: "Studio", label: "Estudios", icon: "📸" },
   { key: "Finca", label: "Fincas", icon: "🌴" },
-  { key: "Pool", label: "Pools", icon: "💧" },
-  { key: "Kitchen", label: "Kitchens", icon: "🍳" },
+  { key: "Pool", label: "Piscinas", icon: "💧" },
+  { key: "Kitchen", label: "Cocinas", icon: "🍳" },
   { key: "Warehouse", label: "Industrial", icon: "🏭" },
   { key: "Colonial house", label: "Colonial", icon: "🏛️" },
-  { key: "Penthouse", label: "Luxury", icon: "🌇" },
+  { key: "Penthouse", label: "Lujo", icon: "🌇" },
 ];
 
 const Browse = () => {
@@ -58,7 +58,7 @@ const Browse = () => {
     <PageShell>
       <div className="container-tight">
         {/* Category pills */}
-        <div className="flex gap-2 overflow-x-auto pb-3 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap mb-6">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap mb-6">
           {QUICK_CATS.map((c) => {
             const active = (c.key === "" && !type) || type === c.key;
             return (
@@ -80,24 +80,24 @@ const Browse = () => {
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>
-            <span className="editorial-eyebrow">Browse spaces</span>
-            <h1 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">{city || "All of Colombia"}</h1>
-            <p className="text-muted-foreground mt-1">{filtered.length} cinematic {filtered.length === 1 ? "space" : "spaces"} available · for every budget</p>
+            <span className="editorial-eyebrow">Explorar locaciones</span>
+            <h1 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">{city || "Toda Colombia"}</h1>
+            <p className="text-muted-foreground mt-1">{filtered.length} locaciones cinematográficas disponibles · para cada presupuesto</p>
           </div>
-          <div className="flex items-center gap-2">
-            <select value={sort} onChange={(e) => update("sort", e.target.value)} className="h-11 px-4 rounded-full glass border-white/10 text-sm font-medium">
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: low → high</option>
-              <option value="price-desc">Price: high → low</option>
-              <option value="rating">Top rated</option>
+          <div className="flex flex-wrap items-center gap-2">
+            <select value={sort} onChange={(e) => update("sort", e.target.value)} className="h-11 max-w-full px-4 rounded-full glass border-white/10 text-sm font-medium">
+              <option value="featured">Destacadas</option>
+              <option value="price-asc">Precio: menor a mayor</option>
+              <option value="price-desc">Precio: mayor a menor</option>
+              <option value="rating">Mejor rating</option>
             </select>
-            <Button variant="glass" size="default" onClick={() => setOpen(true)}><SlidersHorizontal size={16} /> Filters</Button>
-            <Button variant="ghost" size="default" className="hidden sm:inline-flex"><Map size={16} /> Map</Button>
+            <Button variant="glass" size="default" onClick={() => setOpen(true)}><SlidersHorizontal size={16} /> Filtros</Button>
+            <Button variant="ghost" size="default" className="hidden sm:inline-flex"><Map size={16} /> Mapa</Button>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-8">
-          <Chip active={!city} onClick={() => update("city", "")}>All cities</Chip>
+          <Chip active={!city} onClick={() => update("city", "")}>Todas las ciudades</Chip>
           {CITIES.map((c) => (
             <Chip key={c} active={city === c} onClick={() => update("city", c)}>{c}</Chip>
           ))}
@@ -105,9 +105,9 @@ const Browse = () => {
 
         {filtered.length === 0 ? (
           <div className="rounded-3xl glass-strong p-16 text-center">
-            <p className="font-display text-3xl">No spaces match those filters.</p>
-            <p className="text-muted-foreground mt-2">Try widening your search — Colombia has more to give.</p>
-            <Button className="mt-6" variant="hero" onClick={() => setParams(new URLSearchParams())}>Clear filters</Button>
+            <p className="font-display text-3xl">No hay locaciones con esos filtros.</p>
+            <p className="text-muted-foreground mt-2">Abre un poco la busqueda; Colombia todavia tiene mas luz.</p>
+            <Button className="mt-6" variant="hero" onClick={() => setParams(new URLSearchParams())}>Limpiar filtros</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
@@ -122,31 +122,31 @@ const Browse = () => {
           <div className="absolute inset-0 bg-background/70 backdrop-blur-md" />
           <aside onClick={(e) => e.stopPropagation()} className="relative w-full sm:max-w-md glass-strong h-full overflow-y-auto p-6 shadow-float animate-fade-up border-l border-white/10">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-2xl font-semibold">Filters</h2>
+              <h2 className="font-display text-2xl font-semibold">Filtros</h2>
               <button onClick={() => setOpen(false)} className="h-10 w-10 inline-flex items-center justify-center rounded-full glass"><X size={16} /></button>
             </div>
-            <FilterGroup label="Location type">
+            <FilterGroup label="Tipo de locación">
               <div className="flex flex-wrap gap-2">
                 {LOCATION_TYPES.map((t) => (
                   <Chip key={t} active={type === t} onClick={() => update("type", type === t ? "" : t)}>{t}</Chip>
                 ))}
               </div>
             </FilterGroup>
-            <FilterGroup label="Production type">
+            <FilterGroup label="Tipo de producción">
               <div className="flex flex-wrap gap-2">
                 {PRODUCTION_TYPES.map((t) => (
                   <Chip key={t} active={production === t} onClick={() => update("production", production === t ? "" : t)}>{t}</Chip>
                 ))}
               </div>
             </FilterGroup>
-            <FilterGroup label="Max hourly price (COP)">
+            <FilterGroup label="Precio maximo por hora (COP)">
               <input type="range" min={75000} max={600000} step={25000} value={max || 600000} onChange={(e) => update("max", e.target.value)} className="w-full accent-coral" />
-              <div className="text-sm text-muted-foreground mt-1">Up to ${(max || 600000).toLocaleString("es-CO")} COP / hr</div>
+              <div className="text-sm text-muted-foreground mt-1">Hasta ${(max || 600000).toLocaleString("es-CO")} COP / h</div>
             </FilterGroup>
-            <FilterGroup label="Crew size (min)">
-              <input type="number" min={1} value={crew || ""} onChange={(e) => update("crew", e.target.value)} className="h-11 w-full px-4 rounded-2xl glass border-white/10 bg-white/5" placeholder="e.g. 10" />
+            <FilterGroup label="Crew minimo">
+              <input type="number" min={1} value={crew || ""} onChange={(e) => update("crew", e.target.value)} className="h-11 w-full px-4 rounded-2xl glass border-white/10 bg-white/5" placeholder="Ej: 10" />
             </FilterGroup>
-            <FilterGroup label="Amenities">
+            <FilterGroup label="Amenidades">
               <div className="flex flex-wrap gap-2">
                 {AMENITIES.map((a) => (
                   <Chip key={a} active={amenity === a} onClick={() => update("amenity", amenity === a ? "" : a)}>{a}</Chip>
@@ -154,8 +154,8 @@ const Browse = () => {
               </div>
             </FilterGroup>
             <div className="sticky bottom-0 -mx-6 mt-8 px-6 py-4 glass-strong border-t border-white/10 flex gap-3">
-              <Button variant="outline" className="flex-1" onClick={() => setParams(new URLSearchParams())}>Clear</Button>
-              <Button variant="hero" className="flex-1" onClick={() => setOpen(false)}>Show {filtered.length} spaces</Button>
+              <Button variant="outline" className="flex-1" onClick={() => setParams(new URLSearchParams())}>Limpiar</Button>
+              <Button variant="hero" className="flex-1" onClick={() => setOpen(false)}>Ver {filtered.length}</Button>
             </div>
           </aside>
         </div>
@@ -166,7 +166,7 @@ const Browse = () => {
 
 const Chip = ({ active, onClick, children }: { active?: boolean; onClick?: () => void; children: React.ReactNode }) => (
   <button onClick={onClick} className={cn(
-    "px-4 py-2 rounded-full border text-sm font-medium transition-all press",
+    "max-w-full px-4 py-2 rounded-full border text-sm font-medium transition-all press break-words",
     active
       ? "bg-foreground text-background border-foreground shadow-soft"
       : "glass border-white/10 hover:bg-white/15"

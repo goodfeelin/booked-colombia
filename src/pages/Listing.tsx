@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { ProductionIntelligence } from "@/components/ProductionIntelligence";
 import { Button } from "@/components/ui/button";
 import { Star, Users, MapPin, Sun, Volume2, Wifi, Zap, Car, Camera, Heart, Share2, Shield, ChevronRight } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 
 const Listing = () => {
@@ -17,8 +18,8 @@ const Listing = () => {
     return (
       <PageShell>
         <div className="container-tight py-20 text-center">
-          <h1 className="font-display text-4xl">Space not found.</h1>
-          <Link to="/browse"><Button variant="hero" className="mt-6">Browse all spaces</Button></Link>
+          <h1 className="font-display text-4xl">Locación no encontrada.</h1>
+          <Link to="/browse"><Button variant="hero" className="mt-6">Explorar locaciones</Button></Link>
         </div>
       </PageShell>
     );
@@ -44,8 +45,8 @@ const Listing = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="glass" size="sm"><Heart size={14} /> Save</Button>
-            <Button variant="glass" size="sm"><Share2 size={14} /> Share</Button>
+            <Button variant="glass" size="sm"><Heart size={14} /> Guardar</Button>
+            <Button variant="glass" size="sm"><Share2 size={14} /> Compartir</Button>
           </div>
         </div>
 
@@ -68,12 +69,12 @@ const Listing = () => {
               <img src={listing.host.avatar} alt={listing.host.name} className="h-14 w-14 rounded-full object-cover ring-2 ring-white/15" />
               <div className="flex-1">
                 <p className="font-semibold">
-                  Hosted by {listing.host.name}
+                  Anfitrion: {listing.host.name}
                   {listing.host.superhost && (
-                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-gradient-sunset text-white font-bold uppercase tracking-wider glossy">Superhost</span>
+                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-gradient-sunset text-white font-bold uppercase tracking-wider glossy">Top host</span>
                   )}
                 </p>
-                <p className="text-sm text-muted-foreground">Verified host · Responds within 1 hour · WhatsApp available</p>
+                <p className="text-sm text-muted-foreground">Anfitrion verificado · Responde en menos de 1 hora · WhatsApp conectado</p>
               </div>
             </div>
 
@@ -92,10 +93,10 @@ const Listing = () => {
               <ProductionIntelligence
                 compact
                 title="Shoot conditions for this space"
-                subtitle={date ? `Forecast for ${date}` : "Pick a date in the booking widget — we'll preview live conditions."}
+                subtitle={date ? `Preview para ${date}` : "Elige una fecha en la reserva para ver condiciones mock."}
                 data={{
                   location: `${listing.neighborhood}, ${listing.city}`,
-                  weather: { label: "Partly cloudy", tempC: 24 },
+                  weather: { label: "Parcialmente nublado", tempC: 24 },
                   goldenHour: listing.details.bestLightHours,
                   rainRiskPct: 22,
                   lightQuality: listing.details.naturalLight === "Excellent" ? "Excellent" : "Good",
@@ -106,23 +107,23 @@ const Listing = () => {
 
             {/* Production Details */}
             <section className="py-8 border-b border-white/10">
-              <h2 className="font-display text-2xl font-semibold mb-5">Production details</h2>
+              <h2 className="font-display text-2xl font-semibold mb-5">Detalles de producción</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <Detail icon={Sun} label="Natural light" value={listing.details.naturalLight} />
-                <Detail icon={Sun} label="Best light hours" value={listing.details.bestLightHours} />
-                <Detail icon={Volume2} label="Noise" value={listing.details.noise} />
-                <Detail icon={Zap} label="Power" value={listing.details.powerOutlets} />
+                <Detail icon={Sun} label="Luz natural" value={listing.details.naturalLight} />
+                <Detail icon={Sun} label="Mejor luz" value={listing.details.bestLightHours} />
+                <Detail icon={Volume2} label="Ruido" value={listing.details.noise} />
+                <Detail icon={Zap} label="Energia" value={listing.details.powerOutlets} />
                 <Detail icon={Wifi} label="Internet" value={listing.details.wifi} />
-                <Detail icon={Car} label="Parking" value={listing.details.parking} />
-                <Detail icon={Users} label="Max crew" value={`${listing.maxCrew}`} />
-                <Detail icon={Camera} label="Drone" value={listing.details.drone ? "Allowed" : "Not allowed"} />
-                <Detail icon={Camera} label="Night shoots" value={listing.details.nightShoots ? "Allowed" : "Not allowed"} />
+                <Detail icon={Car} label="Parqueo" value={listing.details.parking} />
+                <Detail icon={Users} label="Crew max" value={`${listing.maxCrew}`} />
+                <Detail icon={Camera} label="Drone" value={listing.details.drone ? "Permitido" : "No permitido"} />
+                <Detail icon={Camera} label="Nocturno" value={listing.details.nightShoots ? "Permitido" : "No permitido"} />
               </div>
             </section>
 
             {/* Amenities */}
             <section className="py-8 border-b border-white/10">
-              <h2 className="font-display text-2xl font-semibold mb-5">Amenities</h2>
+              <h2 className="font-display text-2xl font-semibold mb-5">Amenidades</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {listing.amenities.map((a) => (
                   <div key={a} className="flex items-center gap-2 text-sm">
@@ -134,7 +135,7 @@ const Listing = () => {
 
             {/* Rules */}
             <section className="py-8 border-b border-white/10">
-              <h2 className="font-display text-2xl font-semibold mb-4">House rules</h2>
+              <h2 className="font-display text-2xl font-semibold mb-4">Reglas del espacio</h2>
               <ul className="space-y-2 text-muted-foreground">
                 {listing.rules.map((r) => <li key={r} className="flex gap-2"><Shield size={16} className="text-cobalt mt-0.5 shrink-0" />{r}</li>)}
               </ul>
@@ -142,10 +143,10 @@ const Listing = () => {
 
             {/* Map placeholder */}
             <section className="py-8 border-b border-white/10">
-              <h2 className="font-display text-2xl font-semibold mb-4">Where you'll shoot</h2>
+              <h2 className="font-display text-2xl font-semibold mb-4">Donde vas a crear</h2>
               <div className="aspect-[16/9] rounded-3xl widget flex items-center justify-center text-muted-foreground relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-glow opacity-50" />
-                <span className="relative inline-flex items-center gap-2"><MapPin size={18} /> {listing.neighborhood}, {listing.city} · map preview</span>
+                <span className="relative inline-flex items-center gap-2"><MapPin size={18} /> {listing.neighborhood}, {listing.city} · mapa preview</span>
               </div>
             </section>
 
@@ -174,41 +175,41 @@ const Listing = () => {
             <div className="rounded-3xl widget p-6">
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-3xl font-semibold">{formatCOP(listing.hourlyCop)}</span>
-                <span className="text-muted-foreground">/ hour</span>
+                <span className="text-muted-foreground">/ hora</span>
               </div>
-              <p className="text-xs text-muted-foreground">Half-day {formatCOP(listing.halfDayCop)} · Full-day {formatCOP(listing.fullDayCop)}</p>
+              <p className="text-xs text-muted-foreground">Medio día {formatCOP(listing.halfDayCop)} · Día completo {formatCOP(listing.fullDayCop)}</p>
 
               <div className="mt-5 space-y-3">
                 <label className="block">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Date</span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Fecha</span>
                   <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inp} />
                 </label>
                 <label className="block">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Hours (min {listing.minHours})</span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Horas (min {listing.minHours})</span>
                   <input type="number" min={listing.minHours} value={hours} onChange={(e) => setHours(Math.max(listing.minHours, Number(e.target.value)))} className={inp} />
                 </label>
               </div>
 
               <div className="mt-5 space-y-2 text-sm">
                 <Row label={`${formatCOP(listing.hourlyCop)} × ${hours}h`} value={formatCOP(subtotal)} />
-                <Row label="Cleaning fee" value={formatCOP(listing.cleaningFeeCop)} />
-                <Row label="Booked service fee (12%)" value={formatCOP(fee)} />
+                <Row label="Limpieza" value={formatCOP(listing.cleaningFeeCop)} />
+                <Row label="Servicio Booked (12%)" value={formatCOP(fee)} />
                 <div className="border-t border-white/10 pt-3 mt-3 flex justify-between font-semibold text-base text-foreground">
                   <span>Total (COP)</span><span>{formatCOP(total)}</span>
                 </div>
               </div>
 
               <Link to={`/checkout/${listing.id}`}>
-                <Button variant="hero" size="lg" className="w-full mt-5">Request to book <ChevronRight size={18} /></Button>
+              <Button variant="hero" size="lg" className="w-full mt-5">Solicitar reserva <ChevronRight size={18} /></Button>
               </Link>
-              <p className="text-center text-xs text-muted-foreground mt-3">You won't be charged until the host approves.</p>
+              <p className="text-center text-xs text-muted-foreground mt-3">No se cobra hasta que el anfitrión apruebe.</p>
             </div>
           </aside>
         </div>
 
         {/* Similar */}
         <section className="py-20">
-          <h2 className="font-display text-3xl font-semibold mb-8">Similar spaces</h2>
+          <h2 className="font-display text-3xl font-semibold mb-8">Locaciones similares</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {similar.map((l) => <ListingCard key={l.id} listing={l} />)}
           </div>
@@ -221,7 +222,7 @@ const Listing = () => {
           <div className="font-semibold text-foreground">{formatCOP(listing.hourlyCop)} <span className="text-xs text-muted-foreground">/h</span></div>
           <div className="text-[10px] text-muted-foreground">min {listing.minHours}h</div>
         </div>
-        <Link to={`/checkout/${listing.id}`} className="flex-1"><Button variant="hero" className="w-full">Request to book</Button></Link>
+        <Link to={`/checkout/${listing.id}`} className="flex-1"><Button variant="hero" className="w-full">Reservar</Button></Link>
       </div>
     </PageShell>
   );
@@ -229,7 +230,7 @@ const Listing = () => {
 
 const inp = "mt-1 w-full h-11 px-4 rounded-2xl bg-white/5 border border-white/10 text-foreground outline-none focus:border-cobalt transition-colors";
 
-const Detail = ({ icon: Icon, label, value }: { icon: any; label: string; value: string }) => (
+const Detail = ({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) => (
   <div className="p-4 rounded-2xl widget">
     <Icon size={16} className="text-cobalt" />
     <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2 font-semibold">{label}</div>

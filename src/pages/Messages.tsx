@@ -1,94 +1,190 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { LISTINGS } from "@/data/listings";
-import { Send, Search, Phone } from "lucide-react";
+import { CalendarClock, Clock, MapPin, Navigation, Search, Send, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const conversations = LISTINGS.slice(0, 4).map((l, i) => ({
-  id: l.id,
-  host: l.host,
-  listing: l,
-  preview: ["Confirmed for Saturday — see you at 9am ✨","Drone is allowed, bring your own permit","¡Hola! Yes, the rooftop is available","I can move the cobalt sofas, no problem"][i],
-  time: ["10:32","Yesterday","2 days ago","Mar 4"][i],
-  unread: i === 0 || i === 2,
-}));
-
-const seed = [
-  { from: "host", text: "¡Hola Camila! Bienvenida a Booked. Excited about your shoot 📸" },
-  { from: "me", text: "Hi Mariana! Quick question — how's the natural light at 5pm?" },
-  { from: "host", text: "5pm is unreal. The whole west wall lights up gold for about 40 min." },
-  { from: "me", text: "Perfect. Booking now." },
-  { from: "host", text: "Confirmed for Saturday — see you at 9am ✨" },
+const conversations = [
+  {
+    id: LISTINGS[0].id,
+    person: "Mariana Restrepo",
+    role: "Anfitriona",
+    avatar: LISTINGS[0].host.avatar,
+    listing: LISTINGS[0],
+    status: "Confirmada",
+    preview: "La entrada es por porteria. Les dejo autorizados desde las 8:40 a.m.",
+    time: "10:32",
+    unread: true,
+  },
+  {
+    id: LISTINGS[3].id,
+    person: "Daniela Ochoa",
+    role: "Anfitriona",
+    avatar: LISTINGS[3].host.avatar,
+    listing: LISTINGS[3],
+    status: "Solicitud recibida",
+    preview: "Si necesitan mover la mesa, no hay problema. Solo dejemos registro.",
+    time: "Ayer",
+    unread: false,
+  },
+  {
+    id: LISTINGS[4].id,
+    person: "Camilo Vargas",
+    role: "Anfitrion",
+    avatar: LISTINGS[4].host.avatar,
+    listing: LISTINGS[4],
+    status: "Confirmada",
+    preview: "La luz azul entra perfecto desde las 6:10 p.m.",
+    time: "Lun",
+    unread: true,
+  },
+  {
+    id: LISTINGS[5].id,
+    person: "Sofia Henao",
+    role: "Anfitriona",
+    avatar: LISTINGS[5].host.avatar,
+    listing: LISTINGS[5],
+    status: "Completada",
+    preview: "Gracias por cuidar la finca. Quedo lista la reseña.",
+    time: "3 mayo",
+    unread: false,
+  },
 ];
 
+const messages = [
+  { from: "host", text: "Hola Juan, ya tengo la reserva confirmada para este sabado. Crew de 8, cierto?", meta: "10:03" },
+  { from: "me", text: "Si. Llegamos 8:45 para armar camara y primera foto a las 9:20.", meta: "10:05" },
+  { from: "host", text: "Perfecto. En portería dejo autorizados a Juan Sierra Producción. Hay 4 parqueaderos cubiertos.", meta: "10:08" },
+  { from: "me", text: "Pregunta rapida: podemos mover los sofas cobalt unos 50 cm hacia la ventana?", meta: "10:12" },
+  { from: "host", text: "Si, con cuidado y sin arrastrar. Hay sliders en el closet de servicio.", meta: "10:14" },
+  { from: "me", text: "Brutal. Tambien queremos aprovechar golden hour, asi que dejamos un segundo setup listo en la sala.", meta: "10:18" },
+  { from: "host", text: "A esa hora la pared oeste queda dorada. Si llueve, el balcon tiene techo lateral.", meta: "10:32" },
+];
+
+const quickActions = [
+  { label: "Confirmar llegada", icon: Navigation },
+  { label: "Compartir direccion", icon: MapPin },
+  { label: "Ver reserva", icon: ShieldCheck },
+  { label: "Cambiar horario", icon: Clock },
+  { label: "Enviar detalles", icon: CalendarClock },
+];
+
+const statusTone: Record<string, string> = {
+  "Solicitud recibida": "bg-gold/20 border-gold/30",
+  Confirmada: "bg-cobalt/20 border-cobalt/30",
+  Completada: "bg-emerald-500/20 border-emerald-400/30",
+  Cancelada: "bg-destructive/20 border-destructive/30",
+};
+
 const Messages = () => {
-  const [active, setActive] = useState(conversations[0]);
+  const [activeId, setActiveId] = useState(conversations[0].id);
   const [text, setText] = useState("");
-  const [thread, setThread] = useState(seed);
+  const [thread, setThread] = useState(messages);
+  const active = useMemo(() => conversations.find((item) => item.id === activeId) || conversations[0], [activeId]);
 
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-    setThread([...thread, { from: "me", text }]);
+    setThread([...thread, { from: "me", text: text.trim(), meta: "Ahora" }]);
     setText("");
   };
 
   return (
     <PageShell>
       <div className="container-tight">
-        <span className="editorial-eyebrow text-coral">Messages</span>
-        <h1 className="mt-2 font-display text-3xl sm:text-4xl font-semibold mb-6">Talk to your hosts.</h1>
+        <div className="mb-6">
+          <span className="editorial-eyebrow text-coral">Mensajes</span>
+          <h1 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">Coordinación de producción.</h1>
+          <p className="text-muted-foreground mt-2 max-w-2xl">Conversaciones dentro de Booked para parking, luces, acceso, llegada, mobiliario y setup.</p>
+        </div>
 
-        <div className="grid md:grid-cols-[320px_1fr] gap-4 h-[70vh] rounded-3xl widget overflow-hidden">
-          <aside className="border-r border-white/10 overflow-y-auto">
+        <div className="grid lg:grid-cols-[360px_1fr] gap-4 min-h-[72vh] rounded-[2rem] widget overflow-hidden">
+          <aside className="border-b lg:border-b-0 lg:border-r border-white/10 min-w-0">
             <div className="p-4 border-b border-white/10">
-              <div className="flex items-center gap-2 px-3 h-10 rounded-full bg-white/5 border border-white/10">
-                <Search size={14} className="text-muted-foreground" />
-                <input placeholder="Search messages" className="bg-transparent outline-none text-sm w-full" />
+              <div className="flex items-center gap-2 px-3 h-11 rounded-full bg-white/5 border border-white/10">
+                <Search size={14} className="text-muted-foreground shrink-0" />
+                <input placeholder="Buscar mensajes" className="bg-transparent outline-none text-sm w-full min-w-0" />
               </div>
             </div>
-            {conversations.map((c) => (
-              <button key={c.id} onClick={() => setActive(c)} className={cn(
-                "w-full text-left p-4 flex gap-3 border-b border-white/8 hover:bg-white/5 transition-colors",
-                active.id === c.id && "bg-white/8"
-              )}>
-                <img src={c.host.avatar} alt="" className="h-11 w-11 rounded-full object-cover ring-2 ring-white/15" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-sm truncate">{c.host.name}</p>
-                    <span className="text-[10px] text-muted-foreground">{c.time}</span>
+            <div className="max-h-[34vh] lg:max-h-[calc(72vh-77px)] overflow-y-auto">
+              {conversations.map((conversation) => (
+                <button
+                  key={conversation.id}
+                  onClick={() => setActiveId(conversation.id)}
+                  className={cn(
+                    "w-full text-left p-4 flex gap-3 border-b border-white/8 hover:bg-white/5 transition-colors min-w-0",
+                    active.id === conversation.id && "bg-white/8"
+                  )}
+                >
+                  <div className="relative shrink-0">
+                    <img src={conversation.avatar} alt="" className="h-12 w-12 rounded-full object-cover ring-2 ring-white/15" />
+                    <img src={conversation.listing.image} alt="" className="absolute -bottom-1 -right-1 h-6 w-6 rounded-lg object-cover ring-2 ring-background" />
                   </div>
-                  <p className="text-xs text-muted-foreground truncate">{c.listing.title}</p>
-                  <p className="text-xs mt-1 truncate">{c.preview}</p>
-                </div>
-                {c.unread && <span className="h-2 w-2 rounded-full bg-coral mt-1.5 shrink-0 animate-pulse-glow" />}
-              </button>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold text-sm truncate">{conversation.person}</p>
+                      <span className="text-[10px] text-muted-foreground shrink-0">{conversation.time}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{conversation.listing.title}</p>
+                    <div className="mt-1 flex items-center gap-2 min-w-0">
+                      <span className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full border text-white shrink-0 ${statusTone[conversation.status]}`}>
+                        {conversation.status}
+                      </span>
+                      <p className="text-xs truncate">{conversation.preview}</p>
+                    </div>
+                  </div>
+                  {conversation.unread && <span className="h-2.5 w-2.5 rounded-full bg-coral mt-1.5 shrink-0 animate-pulse-glow" />}
+                </button>
+              ))}
+            </div>
           </aside>
 
-          <section className="flex flex-col">
-            <header className="flex items-center gap-3 p-4 border-b border-white/10">
-              <img src={active.host.avatar} alt="" className="h-10 w-10 rounded-full ring-2 ring-white/15" />
-              <div className="flex-1">
-                <p className="font-semibold text-sm">{active.host.name}</p>
-                <p className="text-xs text-muted-foreground">{active.listing.title}</p>
+          <section className="flex flex-col min-w-0 min-h-[70vh] lg:min-h-0">
+            <header className="flex items-center gap-3 p-4 border-b border-white/10 min-w-0">
+              <img src={active.avatar} alt="" className="h-11 w-11 rounded-full ring-2 ring-white/15 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm truncate">{active.person}</p>
+                <p className="text-xs text-muted-foreground truncate">{active.listing.title} · {active.role}</p>
               </div>
-              <Button variant="glass" size="sm"><Phone size={14} /> WhatsApp</Button>
+              <Button variant="glass" size="sm" className="hidden sm:inline-flex">Ver reserva</Button>
             </header>
-            <div className="flex-1 overflow-y-auto p-6 space-y-3 bg-gradient-night">
-              {thread.map((m, i) => (
-                <div key={i} className={cn("max-w-[75%] px-4 py-2.5 rounded-3xl text-sm border",
-                  m.from === "me"
-                    ? "ml-auto bg-gradient-cobalt text-white rounded-br-md border-white/15 glossy"
-                    : "bg-white/5 border-white/10 rounded-bl-md")}>
-                  {m.text}
+
+            <div className="p-3 border-b border-white/10 overflow-x-auto no-scrollbar">
+              <div className="flex gap-2 min-w-max">
+                {quickActions.map((action) => (
+                  <button key={action.label} className="inline-flex items-center gap-2 rounded-full glass px-3 py-2 text-xs font-semibold border-white/10 press">
+                    <action.icon size={13} /> {action.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-gradient-night">
+              {thread.map((message, index) => (
+                <div
+                  key={`${message.text}-${index}`}
+                  className={cn(
+                    "max-w-[86%] sm:max-w-[72%] px-4 py-3 rounded-3xl text-sm border shadow-soft",
+                    message.from === "me"
+                      ? "ml-auto bg-gradient-cobalt text-white rounded-br-md border-white/15 glossy"
+                      : "bg-white/6 border-white/10 rounded-bl-md"
+                  )}
+                >
+                  <p className="break-words">{message.text}</p>
+                  <p className={cn("mt-1 text-[10px]", message.from === "me" ? "text-white/70" : "text-muted-foreground")}>{message.meta}</p>
                 </div>
               ))}
             </div>
-            <form onSubmit={send} className="p-4 border-t border-white/10 flex gap-2">
-              <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Write a message…" className="flex-1 h-12 px-4 rounded-full bg-white/5 border border-white/10 outline-none focus:border-cobalt text-foreground" />
-              <Button type="submit" variant="hero" size="icon"><Send size={16} /></Button>
+
+            <form onSubmit={send} className="p-3 sm:p-4 border-t border-white/10 flex gap-2">
+              <input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Escribe dentro de Booked..."
+                className="min-w-0 flex-1 h-12 px-4 rounded-full bg-white/5 border border-white/10 outline-none focus:border-cobalt text-foreground"
+              />
+              <Button type="submit" variant="hero" size="icon" aria-label="Enviar"><Send size={16} /></Button>
             </form>
           </section>
         </div>

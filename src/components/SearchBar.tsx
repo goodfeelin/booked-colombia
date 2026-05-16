@@ -28,36 +28,36 @@ export const SearchBar = () => {
       className="glass-strong rounded-[28px] p-3 sm:p-4 shadow-float w-full"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-        <Field icon={<MapPin size={15} />} label="Location">
+        <Field icon={<MapPin size={15} />} label="Locación">
           <select value={city} onChange={(e) => setCity(e.target.value)} className={selectCls}>
-            <option value="">Anywhere in Colombia</option>
+            <option value="">Cualquier ciudad en Colombia</option>
             {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </Field>
-        <Field icon={<Calendar size={15} />} label="Date">
+        <Field icon={<Calendar size={15} />} label="Fecha">
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} />
         </Field>
-        <Field icon={<Camera size={15} />} label="Production">
+        <Field icon={<Camera size={15} />} label="Producción">
           <select value={production} onChange={(e) => setProduction(e.target.value)} className={selectCls}>
-            <option value="">Any project</option>
+            <option value="">Cualquier proyecto</option>
             {PRODUCTION_TYPES.map((p) => <option key={p} value={p}>{p}</option>)}
           </select>
         </Field>
         <Field icon={<Users size={15} />} label="Crew">
           <input type="number" min={1} placeholder="e.g. 8" value={crew} onChange={(e) => setCrew(e.target.value)} className={inputCls} />
         </Field>
-        <Field icon={<Wallet size={15} />} label="Max budget / hr">
+        <Field icon={<Wallet size={15} />} label="Presupuesto / h">
           <select value={budget} onChange={(e) => setBudget(e.target.value)} className={selectCls}>
-            <option value="">Any budget</option>
-            <option value="150000">Under $150K COP</option>
-            <option value="300000">Under $300K COP</option>
-            <option value="500000">Under $500K COP</option>
+            <option value="">Cualquier presupuesto</option>
+            <option value="150000">Menos de $150K COP</option>
+            <option value="300000">Menos de $300K COP</option>
+            <option value="500000">Menos de $500K COP</option>
             <option value="1000000">Premium $500K+</option>
           </select>
         </Field>
       </div>
       <Button type="submit" variant="hero" size="lg" className="w-full mt-3 h-14 text-base">
-        <Search size={18} /> Search locations
+        <Search size={18} /> Buscar locaciones
       </Button>
     </form>
   );
@@ -71,6 +71,6 @@ const Field = ({ icon, label, children }: { icon: React.ReactNode; label: string
     <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground inline-flex items-center gap-1.5 font-semibold">
       {icon}{label}
     </span>
-    <span className="mt-0.5 truncate">{children}</span>
+    <span className="mt-0.5 min-w-0 overflow-hidden">{children}</span>
   </label>
 );

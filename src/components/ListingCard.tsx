@@ -44,7 +44,7 @@ export const ListingCard = ({ listing, priority = false }: { listing: Listing; p
 
           <button
             onClick={(e) => { e.preventDefault(); setSaved(!saved); }}
-            aria-label="Save"
+            aria-label="Guardar"
             className="absolute top-3 right-3 h-10 w-10 rounded-full glass-strong inline-flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
           >
             <Heart size={16} className={saved ? "fill-coral stroke-coral" : "text-white"} />
@@ -62,16 +62,16 @@ export const ListingCard = ({ listing, priority = false }: { listing: Listing; p
           </div>
         </div>
 
-        <div className="p-4 flex items-end justify-between gap-4">
-          <div>
+          <div className="p-4 flex items-end justify-between gap-3 min-w-0">
+          <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{listing.type}</div>
             <div className="mt-0.5 font-display text-xl font-semibold text-foreground">
               {formatCOP(listing.hourlyCop)}
-              <span className="text-xs font-sans font-normal text-muted-foreground"> / hr</span>
+              <span className="text-xs font-sans font-normal text-muted-foreground"> / h</span>
             </div>
           </div>
-          <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
-            <Users size={12} /> up to {listing.maxCrew}
+          <div className="text-xs text-muted-foreground inline-flex items-center gap-1 shrink-0">
+            <Users size={12} /> hasta {listing.maxCrew}
           </div>
         </div>
       </article>

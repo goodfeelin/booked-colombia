@@ -3,21 +3,32 @@ import { Search, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getMockUser } from "@/lib/mockAuth";
 
 const links = [
-  { to: "/browse", label: "Explore" },
-  { to: "/dashboard", label: "Bookings" },
-  { to: "/messages", label: "Messages" },
-  { to: "/host/dashboard", label: "Host" },
+  { to: "/browse", label: "Explorar" },
+  { to: "/dashboard", label: "Reservas" },
+  { to: "/messages", label: "Mensajes" },
+  { to: "/host/dashboard", label: "Panel anfitrión" },
 ];
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [authed, setAuthed] = useState(() => Boolean(getMockUser()));
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  useEffect(() => {
+    const update = () => setAuthed(Boolean(getMockUser()));
+    window.addEventListener("storage", update);
+    window.addEventListener("booked-auth-change", update);
+    return () => {
+      window.removeEventListener("storage", update);
+      window.removeEventListener("booked-auth-change", update);
+    };
   }, []);
 
   return (
@@ -42,14 +53,14 @@ export const Navbar = () => {
             <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground ml-1">CO</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 min-w-0">
             {links.map((l) => (
               <NavLink
                 key={l.to}
                 to={l.to}
                 className={({ isActive }) =>
                   cn(
-                    "px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                    "px-3 lg:px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
                     isActive
                       ? "bg-white/10 text-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -63,17 +74,17 @@ export const Navbar = () => {
 
           <div className="flex items-center gap-2">
             <Link to="/browse" className="md:hidden">
-              <Button variant="glass" size="icon" aria-label="Search">
+              <Button variant="glass" size="icon" aria-label="Buscar">
                 <Search />
               </Button>
             </Link>
             <Link to="/host/new" className="hidden md:block">
               <Button variant="glass" size="sm">
-                <Sparkles size={14} /> List your space
+                <Sparkles size={14} /> Publicar espacio
               </Button>
             </Link>
-            <Link to="/auth" className="hidden sm:block">
-              <Button variant="hero" size="sm">Sign in</Button>
+            <Link to={authed ? "/profile" : "/auth"} className="hidden sm:block">
+              <Button variant="hero" size="sm">{authed ? "Perfil" : "Ingresar"}</Button>
             </Link>
           </div>
         </div>

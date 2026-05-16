@@ -80,6 +80,52 @@
     --sidebar-border: 226 18% 18%;
     --sidebar-ring: 224 96% 62%;
   }
+
+  .light {
+    --background: 38 44% 92%;
+    --foreground: 226 32% 9%;
+    --card: 38 38% 96%;
+    --card-foreground: 226 32% 9%;
+    --popover: 38 38% 96%;
+    --popover-foreground: 226 32% 9%;
+
+    --primary: 226 32% 9%;
+    --primary-foreground: 38 44% 96%;
+    --secondary: 38 28% 88%;
+    --secondary-foreground: 226 32% 9%;
+    --muted: 38 24% 86%;
+    --muted-foreground: 226 13% 42%;
+    --accent: 8 92% 58%;
+    --accent-foreground: 0 0% 100%;
+    --border: 36 18% 78%;
+    --input: 36 18% 78%;
+    --ring: 224 90% 54%;
+
+    --gradient-cinema: linear-gradient(180deg, transparent 0%, hsl(226 35% 8% / 0.22) 45%, hsl(38 44% 92% / 0.95) 100%);
+    --gradient-glow: radial-gradient(circle at 20% 10%, hsl(8 96% 66% / 0.22), transparent 55%),
+                     radial-gradient(circle at 90% 30%, hsl(330 90% 68% / 0.18), transparent 55%),
+                     radial-gradient(circle at 50% 100%, hsl(224 96% 62% / 0.2), transparent 60%);
+    --gradient-night: linear-gradient(180deg, hsl(38 48% 94%) 0%, hsl(36 42% 88%) 100%);
+    --gradient-widget: linear-gradient(160deg, hsl(38 48% 97% / 0.82) 0%, hsl(38 40% 90% / 0.8) 100%);
+
+    --shadow-soft: 0 8px 24px -12px hsl(226 40% 20% / 0.22);
+    --shadow-card: 0 18px 48px -22px hsl(226 40% 18% / 0.26), 0 4px 12px -6px hsl(226 40% 18% / 0.18);
+    --shadow-float: 0 32px 80px -32px hsl(226 40% 16% / 0.32);
+    --shadow-inner-glow: inset 0 1px 0 hsl(0 0% 100% / 0.72), inset 0 0 60px hsl(224 96% 62% / 0.04);
+
+    --glass-bg: hsl(38 54% 96% / 0.58);
+    --glass-bg-strong: hsl(38 56% 97% / 0.76);
+    --glass-border: hsl(226 20% 18% / 0.1);
+
+    --sidebar-background: 38 38% 96%;
+    --sidebar-foreground: 226 32% 9%;
+    --sidebar-primary: 226 32% 9%;
+    --sidebar-primary-foreground: 38 44% 96%;
+    --sidebar-accent: 38 28% 88%;
+    --sidebar-accent-foreground: 226 32% 9%;
+    --sidebar-border: 36 18% 78%;
+    --sidebar-ring: 224 90% 54%;
+  }
 }
 
 @layer base {
@@ -91,6 +137,7 @@
     font-feature-settings: 'ss01', 'cv11';
     background-image: var(--gradient-night);
     background-attachment: fixed;
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5 {
     font-family: 'Fraunces', Georgia, serif;
@@ -190,7 +237,9 @@
     @apply uppercase tracking-[0.22em] text-[11px] font-semibold text-muted-foreground;
   }
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1rem); }
-  .pb-mobile-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 6rem); }
+  .pb-mobile-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 7.25rem); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
 /* Animations */
