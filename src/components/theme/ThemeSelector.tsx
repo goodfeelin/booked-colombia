@@ -12,17 +12,17 @@ export const ThemeSelector = () => {
   const { preference, setPreference } = useTheme();
 
   return (
-    <div className="grid grid-cols-3 gap-2 rounded-full glass p-1 border-white/10">
+    <div className="grid grid-cols-3 gap-1.5 rounded-full glass p-1 border-white/10 shadow-inner-glow">
       {options.map((option) => (
         <button
           key={option.value}
           type="button"
           onClick={() => setPreference(option.value)}
           className={cn(
-            "min-w-0 rounded-full px-2.5 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-all press",
+            "min-w-0 rounded-full px-2.5 py-2.5 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-all duration-300 press",
             preference === option.value
               ? "bg-gradient-sunset text-white shadow-glow-coral glossy"
-              : "text-muted-foreground hover:text-foreground hover:bg-white/8"
+              : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
           )}
         >
           <option.icon size={14} />

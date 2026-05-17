@@ -69,12 +69,12 @@ const Index = () => {
 
       {/* CATEGORIES */}
       <section className="container-tight py-10">
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap">
           {categories.map((c) => (
             <Link
               key={c.label}
               to={c.label === "Todas" ? "/browse" : "/browse"}
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full glass border-white/10 hover:bg-white/15 hover:-translate-y-0.5 transition-all text-sm font-medium press"
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full glass border-white/10 hover:bg-foreground/5 hover:-translate-y-0.5 transition-all text-sm font-semibold press"
             >
               <span className="text-base">{c.icon}</span>{c.label}
             </Link>
@@ -118,7 +118,7 @@ const Index = () => {
           <div>
             <span className="editorial-eyebrow">Selección Booked</span>
             <h2 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">Curadas para tu próximo rodaje.</h2>
-            <p className="text-muted-foreground mt-2 max-w-xl">Espacios indie, casas creativas y locaciones de lujo en una sola grilla.</p>
+            <p className="text-muted-foreground mt-2 max-w-xl">Desde producciones independientes hasta campañas premium, con espacios para todos los presupuestos creativos.</p>
           </div>
           <Link to="/browse" className="hidden sm:inline-flex items-center gap-1 text-sm font-medium hover:gap-2 transition-all text-muted-foreground hover:text-foreground">
             Ver todas <ArrowRight size={14} />

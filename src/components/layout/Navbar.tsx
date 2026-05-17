@@ -62,8 +62,8 @@ export const Navbar = () => {
                   cn(
                     "px-3 lg:px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
                     isActive
-                      ? "bg-white/10 text-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                      ? "bg-foreground/10 text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                   )
                 }
               >

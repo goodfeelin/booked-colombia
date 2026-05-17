@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";
 import { ListingCard } from "@/components/ListingCard";
 import { LISTINGS, CITIES, LOCATION_TYPES, AMENITIES, PRODUCTION_TYPES } from "@/data/listings";
-import { SlidersHorizontal, Map, X } from "lucide-react";
+import { SlidersHorizontal, Map, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -57,8 +57,26 @@ const Browse = () => {
   return (
     <PageShell>
       <div className="container-tight">
+        <section className="mb-7 rounded-[2rem] glass-strong p-5 sm:p-7 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-glow opacity-30 pointer-events-none" />
+          <div className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+            <div className="max-w-3xl">
+              <span className="editorial-eyebrow text-coral">Marketplace cinematográfico</span>
+              <h1 className="mt-2 font-display text-4xl sm:text-6xl font-semibold text-balance">{city || "Toda Colombia"}</h1>
+              <p className="mt-3 text-muted-foreground max-w-2xl">
+                Locaciones para fotografía, cine, contenido, podcasts y campañas. Desde producciones independientes hasta campañas premium.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full surface-quiet px-3 py-2"><Sparkles size={13} className="text-gold" /> Espacios verificados</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full surface-quiet px-3 py-2">Desde $75K COP/h</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full surface-quiet px-3 py-2">Para todos los presupuestos creativos</span>
+            </div>
+          </div>
+        </section>
+
         {/* Category pills */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap mb-6">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3 -mx-5 px-5 sm:mx-0 sm:px-0 sm:flex-wrap mb-7">
           {QUICK_CATS.map((c) => {
             const active = (c.key === "" && !type) || type === c.key;
             return (
@@ -66,7 +84,7 @@ const Browse = () => {
                 key={c.label}
                 onClick={() => update("type", c.key)}
                 className={cn(
-                  "shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border transition-all press",
+                  "shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border transition-all press hover:-translate-y-0.5",
                   active
                     ? "bg-gradient-sunset text-white border-white/15 shadow-glow-coral glossy"
                     : "glass border-white/10 text-foreground hover:bg-white/15"
@@ -78,11 +96,11 @@ const Browse = () => {
           })}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
           <div>
             <span className="editorial-eyebrow">Explorar locaciones</span>
-            <h1 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">{city || "Toda Colombia"}</h1>
-            <p className="text-muted-foreground mt-1">{filtered.length} locaciones cinematográficas disponibles · para cada presupuesto</p>
+            <h2 className="mt-2 font-display text-3xl sm:text-4xl font-semibold">{filtered.length} locaciones disponibles</h2>
+            <p className="text-muted-foreground mt-1">Espacios para todos los presupuestos creativos.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <select value={sort} onChange={(e) => update("sort", e.target.value)} className="h-11 max-w-full px-4 rounded-full glass border-white/10 text-sm font-medium">
@@ -96,7 +114,7 @@ const Browse = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-9">
           <Chip active={!city} onClick={() => update("city", "")}>Todas las ciudades</Chip>
           {CITIES.map((c) => (
             <Chip key={c} active={city === c} onClick={() => update("city", c)}>{c}</Chip>
@@ -104,13 +122,13 @@ const Browse = () => {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-3xl glass-strong p-16 text-center">
+          <div className="rounded-3xl glass-strong p-8 sm:p-16 text-center">
             <p className="font-display text-3xl">No hay locaciones con esos filtros.</p>
-            <p className="text-muted-foreground mt-2">Abre un poco la busqueda; Colombia todavia tiene mas luz.</p>
+            <p className="text-muted-foreground mt-2">Abre un poco la búsqueda; Colombia todavía tiene más luz.</p>
             <Button className="mt-6" variant="hero" onClick={() => setParams(new URLSearchParams())}>Limpiar filtros</Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-7 pb-16">
             {filtered.map((l) => <ListingCard key={l.id} listing={l} />)}
           </div>
         )}
@@ -139,11 +157,11 @@ const Browse = () => {
                 ))}
               </div>
             </FilterGroup>
-            <FilterGroup label="Precio maximo por hora (COP)">
+            <FilterGroup label="Precio máximo por hora (COP)">
               <input type="range" min={75000} max={600000} step={25000} value={max || 600000} onChange={(e) => update("max", e.target.value)} className="w-full accent-coral" />
               <div className="text-sm text-muted-foreground mt-1">Hasta ${(max || 600000).toLocaleString("es-CO")} COP / h</div>
             </FilterGroup>
-            <FilterGroup label="Crew minimo">
+            <FilterGroup label="Crew mínimo">
               <input type="number" min={1} value={crew || ""} onChange={(e) => update("crew", e.target.value)} className="h-11 w-full px-4 rounded-2xl glass border-white/10 bg-white/5" placeholder="Ej: 10" />
             </FilterGroup>
             <FilterGroup label="Amenidades">
