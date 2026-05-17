@@ -3,21 +3,28 @@ import { PageShell } from "@/components/layout/PageShell";
 import { LISTINGS, formatCOP, PRODUCTION_TYPES } from "@/data/listings";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { CreditCard, Wallet, Bitcoin, Banknote, ShieldCheck } from "lucide-react";
+import { CreditCard, Wallet, Bitcoin, Banknote, ShieldCheck, CheckCircle2, MessageCircle } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import type { ProductionType } from "@/data/types";
+import type { ProductionType as ListingProductionType } from "@/data/types";
+import type { BookingStatus, PaymentStatus, ProductionType } from "@/lib/marketplaceTypes";
 
 type DurationOption = "hourly" | "halfDay" | "fullDay";
-type PaymentMethod = "card" | "pse" | "nequi" | "crypto";
+type PaymentMethod = "card" | "pse" | "nequi" | "bancolombia" | "daviplata" | "btc" | "xrp" | "usdc";
 
 const paymentOptions: Array<{ k: PaymentMethod; label: string; icon: LucideIcon; available: boolean }> = [
   { k: "card", label: "Tarjeta", icon: CreditCard, available: true },
-  { k: "pse", label: "PSE / Nequi", icon: Banknote, available: false },
-  { k: "nequi", label: "Bancolombia", icon: Wallet, available: false },
-  { k: "crypto", label: "Crypto", icon: Bitcoin, available: false },
+  { k: "pse", label: "PSE", icon: Banknote, available: false },
+  { k: "nequi", label: "Nequi", icon: Wallet, available: false },
+  { k: "bancolombia", label: "Bancolombia", icon: Banknote, available: false },
+  { k: "daviplata", label: "Daviplata", icon: Wallet, available: false },
+  { k: "btc", label: "Bitcoin", icon: Bitcoin, available: false },
+  { k: "xrp", label: "XRP", icon: Bitcoin, available: false },
+  { k: "usdc", label: "USDC", icon: Bitcoin, available: false },
 ];
+
+const purposeOptions: ProductionType[] = ["Film", "TV", "Fotografía", "Evento", "Podcast", "Video musical", "Comercial", "Contenido", "Campaña de marca", "Workshop"];
 
 const Checkout = () => {
   const { id } = useParams();
@@ -27,22 +34,53 @@ const Checkout = () => {
   const [hours, setHours] = useState(listing.minHours);
   const [crew, setCrew] = useState(5);
   const [production, setProduction] = useState(PRODUCTION_TYPES[0]);
+  const [purpose, setPurpose] = useState<ProductionType>("Fotografía");
   const [date, setDate] = useState("");
   const [start, setStart] = useState("09:00");
+  const [end, setEnd] = useState("13:00");
   const [message, setMessage] = useState("");
   const [method, setMethod] = useState<PaymentMethod>("card");
+  const [submitted, setSubmitted] = useState(false);
 
   const subtotal =
     duration === "hourly" ? listing.hourlyCop * hours :
     duration === "halfDay" ? listing.halfDayCop : listing.fullDayCop;
   const fee = Math.round(subtotal * 0.12);
   const total = subtotal + fee + listing.cleaningFeeCop;
+  const requestStatus: BookingStatus = submitted ? "Solicitud enviada" : "Pendiente de aprobación";
+  const paymentStatus: PaymentStatus = "Pendiente";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
     toast.success("Solicitud enviada", { description: "El anfitrión responderá dentro de Booked." });
-    setTimeout(() => navigate("/dashboard"), 1200);
   };
+
+  if (submitted) {
+    return (
+      <PageShell>
+        <div className="container-tight max-w-3xl">
+          <div className="rounded-[2rem] glass-strong p-6 sm:p-10 text-center">
+            <div className="mx-auto h-16 w-16 rounded-3xl bg-gradient-sunset text-white grid place-items-center shadow-glow-coral glossy">
+              <CheckCircle2 size={28} />
+            </div>
+            <span className="editorial-eyebrow text-coral mt-6 block">Solicitud enviada</span>
+            <h1 className="mt-2 font-display text-4xl sm:text-5xl font-semibold">Tu reserva quedó pendiente de aprobación.</h1>
+            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">El pago queda pendiente hasta que el anfitrión acepte. COP sigue siendo la fuente de verdad; ningún dato privado se publica on-chain.</p>
+            <div className="mt-6 grid sm:grid-cols-3 gap-3 text-left">
+              <Info label="Estado" value={requestStatus} />
+              <Info label="Pago" value={paymentStatus} />
+              <Info label="Total" value={formatCOP(total)} />
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Button variant="hero" onClick={() => navigate("/dashboard")}>Ver en Reservas</Button>
+              <Button variant="glass" onClick={() => navigate("/messages")}><MessageCircle size={16} /> Mensajear anfitrión</Button>
+            </div>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell>
@@ -73,6 +111,7 @@ const Checkout = () => {
               <div className="grid sm:grid-cols-3 gap-3 mt-4">
                 <Field label="Fecha"><input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={inp} /></Field>
                 <Field label="Inicio"><input type="time" value={start} onChange={(e) => setStart(e.target.value)} className={inp} /></Field>
+                <Field label="Fin"><input type="time" value={end} onChange={(e) => setEnd(e.target.value)} className={inp} /></Field>
                 {duration === "hourly" && (
                   <Field label={`Horas (min ${listing.minHours})`}><input type="number" min={listing.minHours} value={hours} onChange={(e) => setHours(Math.max(listing.minHours, +e.target.value))} className={inp} /></Field>
                 )}
@@ -82,8 +121,13 @@ const Checkout = () => {
             <Card title="Detalles de producción">
               <div className="grid sm:grid-cols-2 gap-3">
                 <Field label="Tipo de producción">
-                  <select className={inp} value={production} onChange={(e) => setProduction(e.target.value as ProductionType)}>
+                  <select className={inp} value={production} onChange={(e) => setProduction(e.target.value as ListingProductionType)}>
                     {PRODUCTION_TYPES.map((p) => <option key={p}>{p}</option>)}
+                  </select>
+                </Field>
+                <Field label="Propósito">
+                  <select className={inp} value={purpose} onChange={(e) => setPurpose(e.target.value as ProductionType)}>
+                    {purposeOptions.map((p) => <option key={p}>{p}</option>)}
                   </select>
                 </Field>
                 <Field label="Tamaño del crew"><input type="number" min={1} max={listing.maxCrew} value={crew} onChange={(e) => setCrew(+e.target.value)} className={inp} /></Field>
@@ -93,7 +137,7 @@ const Checkout = () => {
               </Field>
             </Card>
 
-            <Card title="Metodo de pago">
+            <Card title="Método de pago">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {paymentOptions.map((m) => (
                   <button type="button" key={m.k} onClick={() => m.available && setMethod(m.k)} disabled={!m.available} className={cn(
@@ -109,7 +153,7 @@ const Checkout = () => {
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground mt-4 inline-flex items-center gap-1.5"><ShieldCheck size={14} className="text-cobalt" /> No se cobra hasta que el anfitrión apruebe la solicitud.</p>
+              <p className="text-xs text-muted-foreground mt-4 inline-flex items-center gap-1.5"><ShieldCheck size={14} className="text-cobalt" /> COP es la fuente de verdad. Crypto será opcional a futuro; no habrá datos privados on-chain.</p>
             </Card>
           </div>
 
@@ -127,6 +171,7 @@ const Checkout = () => {
                   <Row label={duration === "hourly" ? `${formatCOP(listing.hourlyCop)} × ${hours}h` : duration === "halfDay" ? "Half-day" : "Full-day"} value={formatCOP(subtotal)} />
                   <Row label="Limpieza" value={formatCOP(listing.cleaningFeeCop)} />
                   <Row label="Servicio Booked" value={formatCOP(fee)} />
+                  <Row label={`${date || "Fecha"} · ${start}-${end}`} value={purpose} />
                 </div>
                 <div className="border-t border-white/10 mt-4 pt-4 flex justify-between font-display text-xl font-semibold">
                   <span>Total</span><span>{formatCOP(total)}</span>
@@ -156,6 +201,13 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
 );
 const Row = ({ label, value }: { label: string; value: string }) => (
   <div className="flex justify-between text-muted-foreground"><span>{label}</span><span className="text-foreground">{value}</span></div>
+);
+
+const Info = ({ label, value }: { label: string; value: string }) => (
+  <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</div>
+    <div className="font-semibold mt-1">{value}</div>
+  </div>
 );
 
 export default Checkout;

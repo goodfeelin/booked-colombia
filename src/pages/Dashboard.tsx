@@ -1,31 +1,17 @@
 import { Link } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";
 import { LISTINGS, formatCOP } from "@/data/listings";
+import { findListing, mockBookingRequests, mockFavorites } from "@/lib/marketplaceMockData";
 import { ProductionIntelligence } from "@/components/ProductionIntelligence";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, Calendar, CheckCircle2, Clock, Heart, MapPin, MessageCircle, Sparkles } from "lucide-react";
+import { BadgeCheck, Calendar, CheckCircle2, Clock, Heart, MapPin, MessageCircle, Sparkles, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 
-const reservations = [
-  {
-    id: 1,
-    listing: LISTINGS[0],
-    date: "22 mayo 2026",
-    time: "9:00 a.m. - 1:00 p.m.",
-    status: "Confirmada",
-    production: "Editorial de moda",
-    crew: 8,
-  },
-  {
-    id: 2,
-    listing: LISTINGS[5],
-    date: "4 junio 2026",
-    time: "Día completo",
-    status: "Solicitud recibida",
-    production: "Video musical",
-    crew: 14,
-  },
-];
+const reservations = mockBookingRequests.filter((booking) => booking.guestId === "user-juan").map((booking) => ({
+  ...booking,
+  listing: findListing(booking.listingId),
+}));
 
 const completed = [
   { listing: LISTINGS[3], date: "3 mayo 2026", status: "Completada", production: "Food content" },
@@ -40,6 +26,10 @@ const statusTone: Record<string, string> = {
 };
 
 const Dashboard = () => {
+  const [savedIds, setSavedIds] = useState(() => mockFavorites.map((favorite) => favorite.listingId));
+  const savedListings = savedIds.map(findListing);
+  const removeSaved = (listingId: string) => setSavedIds((current) => current.filter((id) => id !== listingId));
+
   return (
     <PageShell>
       <div className="container-tight">
@@ -55,7 +45,7 @@ const Dashboard = () => {
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           <Stat icon={Calendar} label="Proximas" value="2" />
           <Stat icon={Clock} label="Pendientes" value="1" />
-          <Stat icon={Heart} label="Guardadas" value="18" />
+          <Stat icon={Heart} label="Guardadas" value={`${savedIds.length}`} />
           <Stat icon={BadgeCheck} label="Completadas" value="10" />
         </section>
 
@@ -80,9 +70,9 @@ const Dashboard = () => {
                   </p>
                   <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                     <Info label="Fecha" value={item.date} />
-                    <Info label="Horario" value={item.time} />
-                    <Info label="Producción" value={item.production} />
-                    <Info label="Crew" value={`${item.crew} personas`} />
+                    <Info label="Horario" value={`${item.startTime} - ${item.endTime}`} />
+                    <Info label="Producción" value={item.productionType} />
+                    <Info label="Crew" value={`${item.crewSize} personas`} />
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link to="/messages"><Button variant="hero" size="sm"><MessageCircle size={14} /> Mensajear</Button></Link>
@@ -136,14 +126,19 @@ const Dashboard = () => {
               <Heart size={20} className="text-coral" /> Guardados
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {LISTINGS.slice(0, 4).map((listing) => (
-                <Link to={`/listing/${listing.id}`} key={listing.id} className="group min-w-0">
-                  <div className="aspect-square rounded-2xl overflow-hidden border border-white/10">
-                    <img src={listing.image} alt={listing.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                  <p className="text-sm font-medium mt-2 truncate">{listing.title}</p>
-                  <p className="text-xs text-muted-foreground">{formatCOP(listing.hourlyCop)} / h</p>
-                </Link>
+              {savedListings.map((listing) => (
+                <div key={listing.id} className="group min-w-0 relative">
+                  <Link to={`/listing/${listing.id}`}>
+                    <div className="aspect-square rounded-2xl overflow-hidden border border-white/10">
+                      <img src={listing.image} alt={listing.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <p className="text-sm font-medium mt-2 truncate">{listing.title}</p>
+                    <p className="text-xs text-muted-foreground">{listing.city} · {formatCOP(listing.hourlyCop)} / h</p>
+                  </Link>
+                  <button onClick={() => removeSaved(listing.id)} className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/60 backdrop-blur border border-white/15 grid place-items-center">
+                    <X size={13} />
+                  </button>
+                </div>
               ))}
             </div>
           </section>

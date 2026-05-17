@@ -1,3 +1,5 @@
+import type { UserRole } from "./marketplaceTypes";
+
 export type MockUserRole = "guest" | "host";
 
 export type MockUser = {
@@ -8,6 +10,7 @@ export type MockUser = {
   whatsapp: string;
   verified: boolean;
   roleType: MockUserRole;
+  roles: UserRole[];
 };
 
 export const JUAN_MOCK_USER: MockUser = {
@@ -18,6 +21,7 @@ export const JUAN_MOCK_USER: MockUser = {
   whatsapp: "+57 300 123 4567",
   verified: true,
   roleType: "host",
+  roles: ["creador", "anfitrion"],
 };
 
 const AUTH_KEY = "booked.mockUser";

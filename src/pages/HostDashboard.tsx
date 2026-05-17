@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";
 import { LISTINGS, formatCOP } from "@/data/listings";
+import { findListing, mockBookingRequests } from "@/lib/marketplaceMockData";
 import { ProductionIntelligence } from "@/components/ProductionIntelligence";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Calendar, Check, Clock, DollarSign, Eye, Pencil, Plus, Sparkles, X } from "lucide-react";
+import { BarChart3, Calendar, Check, Clock, DollarSign, Eye, MessageCircle, Pencil, Plus, Sparkles, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 
 const hostListings = [
   LISTINGS.find((item) => item.id === "laureles-retro-kitchen")!,
@@ -12,26 +14,11 @@ const hostListings = [
   LISTINGS.find((item) => item.id === "tropical-finca-pool")!,
 ];
 
-const requests = [
-  {
-    name: "Andres Cortes",
-    listing: hostListings[0],
-    date: "30 mayo · 9:00 a.m. - 1:00 p.m.",
-    crew: 8,
-    amount: 1280000,
-    status: "Solicitud recibida",
-    details: "Food content con cocina activa, 2 luces y micro crew.",
-  },
-  {
-    name: "Mariangel Soto",
-    listing: hostListings[2],
-    date: "2 junio · Día completo",
-    crew: 14,
-    amount: 1750000,
-    status: "Pendiente aprobacion",
-    details: "Campana swimwear, maquillaje en sitio y drone exterior.",
-  },
-];
+const hostRequests = mockBookingRequests.filter((booking) => booking.hostId === "host-juan").map((booking) => ({
+  ...booking,
+  guestName: booking.guestId === "user-andres" ? "Andrés Cortés" : "Juan Sierra",
+  listing: findListing(booking.listingId),
+}));
 
 const approved = [
   { listing: hostListings[1], name: "Nicolas Mesa", date: "7 junio · 6:00 p.m.", crew: 18, status: "Confirmada" },
@@ -45,6 +32,9 @@ const listingMeta: Record<string, { earnings: string; next: string; occupancy: s
 };
 
 const HostDashboard = () => {
+  const [requestStatuses, setRequestStatuses] = useState<Record<string, string>>({});
+  const setRequestStatus = (id: string, status: string) => setRequestStatuses((current) => ({ ...current, [id]: status }));
+
   return (
     <PageShell>
       <div className="container-tight">
@@ -71,24 +61,26 @@ const HostDashboard = () => {
               <p className="text-sm text-muted-foreground mt-1">Acepta o declina con los detalles de producción visibles.</p>
             </div>
             <div className="divide-y divide-white/10">
-              {requests.map((request) => (
-                <article key={`${request.name}-${request.listing.id}`} className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 min-w-0">
+              {hostRequests.map((request) => (
+                <article key={request.id} className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 min-w-0">
                   <img src={request.listing.image} alt="" className="h-24 w-full md:w-32 object-cover rounded-2xl shrink-0 border border-white/10" />
                   <div className="flex-1 min-w-0">
                     <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-gold/20 border border-gold/30 text-white font-bold">
-                      {request.status}
+                      {requestStatuses[request.id] || request.status}
                     </span>
                     <h3 className="mt-2 font-display text-xl font-semibold truncate">{request.listing.title}</h3>
-                    <p className="text-sm text-muted-foreground">{request.name} · {request.date}</p>
-                    <p className="text-sm mt-2 break-words">{request.details}</p>
+                    <p className="text-sm text-muted-foreground">{request.guestName} · {request.date} · {request.startTime}-{request.endTime}</p>
+                    <p className="text-sm mt-2 break-words">{request.messageToHost}</p>
                     <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                      <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1">Crew {request.crew}</span>
-                      <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1">Payout {formatCOP(request.amount)}</span>
+                      <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1">Crew {request.crewSize}</span>
+                      <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1">{request.productionType}</span>
+                      <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1">Total {formatCOP(request.totalCop)}</span>
                     </div>
                   </div>
-                  <div className="flex md:flex-col gap-2">
-                    <Button variant="outline" size="sm" className="flex-1 md:flex-none"><X size={14} /> Declinar</Button>
-                    <Button variant="hero" size="sm" className="flex-1 md:flex-none"><Check size={14} /> Aceptar</Button>
+                  <div className="flex flex-wrap md:flex-col gap-2">
+                    <Button variant="outline" size="sm" className="flex-1 md:flex-none" onClick={() => setRequestStatus(request.id, "Rechazada")}><X size={14} /> Declinar</Button>
+                    <Button variant="hero" size="sm" className="flex-1 md:flex-none" onClick={() => setRequestStatus(request.id, "Confirmada")}><Check size={14} /> Aceptar</Button>
+                    <Button variant="glass" size="sm" className="flex-1 md:flex-none"><MessageCircle size={14} /> Mensaje</Button>
                   </div>
                 </article>
               ))}

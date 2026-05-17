@@ -1,66 +1,34 @@
 import { useMemo, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
-import { LISTINGS } from "@/data/listings";
+import { findListing, mockBookingRequests, mockConversations, mockMessages } from "@/lib/marketplaceMockData";
 import { CalendarClock, Clock, MapPin, Navigation, Search, Send, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const conversations = [
-  {
-    id: LISTINGS[0].id,
-    person: "Mariana Restrepo",
-    role: "Anfitriona",
-    avatar: LISTINGS[0].host.avatar,
-    listing: LISTINGS[0],
-    status: "Confirmada",
-    preview: "La entrada es por porteria. Les dejo autorizados desde las 8:40 a.m.",
-    time: "10:32",
-    unread: true,
-  },
-  {
-    id: LISTINGS[3].id,
-    person: "Daniela Ochoa",
-    role: "Anfitriona",
-    avatar: LISTINGS[3].host.avatar,
-    listing: LISTINGS[3],
-    status: "Solicitud recibida",
-    preview: "Si necesitan mover la mesa, no hay problema. Solo dejemos registro.",
-    time: "Ayer",
-    unread: false,
-  },
-  {
-    id: LISTINGS[4].id,
-    person: "Camilo Vargas",
-    role: "Anfitrion",
-    avatar: LISTINGS[4].host.avatar,
-    listing: LISTINGS[4],
-    status: "Confirmada",
-    preview: "La luz azul entra perfecto desde las 6:10 p.m.",
-    time: "Lun",
-    unread: true,
-  },
-  {
-    id: LISTINGS[5].id,
-    person: "Sofia Henao",
-    role: "Anfitriona",
-    avatar: LISTINGS[5].host.avatar,
-    listing: LISTINGS[5],
-    status: "Completada",
-    preview: "Gracias por cuidar la finca. Quedo lista la reseña.",
-    time: "3 mayo",
-    unread: false,
-  },
-];
+const conversations = mockConversations.map((conversation) => {
+  const booking = mockBookingRequests.find((item) => item.id === conversation.bookingId) || mockBookingRequests[0];
+  const listing = findListing(conversation.listingId);
+  return {
+    ...conversation,
+    booking,
+    person: booking.hostId === "host-juan" ? "Andrés Cortés" : listing.host.name,
+    role: booking.hostId === "host-juan" ? "Creador" : "Anfitrión",
+    avatar: listing.host.avatar,
+    listing,
+    status: booking.status,
+    preview: conversation.lastMessagePreview,
+    time: new Date(conversation.updatedAt).toLocaleDateString("es-CO", { month: "short", day: "numeric" }),
+    unread: conversation.unreadCount > 0,
+  };
+});
 
-const messages = [
-  { from: "host", text: "Hola Juan, ya tengo la reserva confirmada para este sabado. Crew de 8, cierto?", meta: "10:03" },
-  { from: "me", text: "Si. Llegamos 8:45 para armar camara y primera foto a las 9:20.", meta: "10:05" },
-  { from: "host", text: "Perfecto. En portería dejo autorizados a Juan Sierra Producción. Hay 4 parqueaderos cubiertos.", meta: "10:08" },
-  { from: "me", text: "Pregunta rapida: podemos mover los sofas cobalt unos 50 cm hacia la ventana?", meta: "10:12" },
-  { from: "host", text: "Si, con cuidado y sin arrastrar. Hay sliders en el closet de servicio.", meta: "10:14" },
-  { from: "me", text: "Brutal. Tambien queremos aprovechar golden hour, asi que dejamos un segundo setup listo en la sala.", meta: "10:18" },
-  { from: "host", text: "A esa hora la pared oeste queda dorada. Si llueve, el balcon tiene techo lateral.", meta: "10:32" },
-];
+const messages = mockMessages
+  .filter((message) => message.conversationId === conversations[0].id)
+  .map((message) => ({
+    from: message.senderId === "user-juan" ? "me" : "host",
+    text: message.body,
+    meta: new Date(message.createdAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
+  }));
 
 const quickActions = [
   { label: "Confirmar llegada", icon: Navigation },
@@ -145,7 +113,7 @@ const Messages = () => {
               <img src={active.avatar} alt="" className="h-11 w-11 rounded-full ring-2 ring-white/15 shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm truncate">{active.person}</p>
-                <p className="text-xs text-muted-foreground truncate">{active.listing.title} · {active.role}</p>
+                <p className="text-xs text-muted-foreground truncate">{active.listing.title} · {active.status} · {active.role}</p>
               </div>
               <Button variant="glass" size="sm" className="hidden sm:inline-flex">Ver reserva</Button>
             </header>

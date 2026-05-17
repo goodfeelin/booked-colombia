@@ -4,6 +4,7 @@ import { LISTINGS, formatCOP } from "@/data/listings";
 import { Button } from "@/components/ui/button";
 import { clearMockUser, getMockUser, JUAN_MOCK_USER, setMockUser } from "@/lib/mockAuth";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
+import { cn } from "@/lib/utils";
 import {
   BadgeCheck,
   Calendar,
@@ -27,6 +28,7 @@ const creatorStats = [
 const Profile = () => {
   const navigate = useNavigate();
   const user = getMockUser() || JUAN_MOCK_USER;
+  const roles = user.roles || ["creador", user.roleType === "host" ? "anfitrion" : "creador"];
 
   const signOut = () => {
     clearMockUser();
@@ -85,6 +87,13 @@ const Profile = () => {
               <Shortcut icon={Heart} label="Locaciones guardadas" to="/dashboard?tab=saved" />
               <Shortcut icon={Sparkles} label="Mis espacios" to="/host/dashboard" />
               <Shortcut icon={Settings} label="Configuración" to="/auth" />
+            </Panel>
+
+            <Panel title="Modos de cuenta">
+              <div className="grid gap-3">
+                <ModeCard title="Como creador" body="Reservas, guardados, mensajes y pagos pendientes de aprobación." active={roles.includes("creador")} />
+                <ModeCard title="Como anfitrión" body="Listings, solicitudes entrantes, disponibilidad y payouts mock." active={roles.includes("anfitrion")} />
+              </div>
             </Panel>
 
             <Panel title="Preferencias">
@@ -190,6 +199,18 @@ const Shortcut = ({ icon: Icon, label, to }: { icon: LucideIcon; label: string; 
     </span>
     <ChevronRight size={16} className="text-muted-foreground shrink-0" />
   </Link>
+);
+
+const ModeCard = ({ title, body, active }: { title: string; body: string; active: boolean }) => (
+  <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+    <div className="flex items-center justify-between gap-3">
+      <p className="font-semibold">{title}</p>
+      <span className={cn("text-[10px] uppercase tracking-wider rounded-full px-2 py-1 border", active ? "bg-cobalt/20 border-cobalt/30 text-foreground" : "text-muted-foreground border-white/10")}>
+        {active ? "Activo" : "Inactivo"}
+      </span>
+    </div>
+    <p className="text-sm text-muted-foreground mt-1">{body}</p>
+  </div>
 );
 
 export default Profile;
