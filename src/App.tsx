@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme/ThemeProvider.tsx";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute.tsx";
+import { AuthProvider } from "@/contexts/AuthContext.tsx";
 import Index from "./pages/Index.tsx";
 import Browse from "./pages/Browse.tsx";
 import Listing from "./pages/Listing.tsx";
@@ -25,22 +27,24 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/browse" element={<Browse />} />
-            <Route path="/listing/:id" element={<Listing />} />
-            <Route path="/host/new" element={<HostNew />} />
-            <Route path="/host/dashboard" element={<HostDashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/checkout/:id" element={<Checkout />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/browse" element={<Browse />} />
+              <Route path="/listing/:id" element={<Listing />} />
+              <Route path="/host/new" element={<ProtectedRoute><HostNew /></ProtectedRoute>} />
+              <Route path="/host/dashboard" element={<ProtectedRoute><HostDashboard /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/checkout/:id" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

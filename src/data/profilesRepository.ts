@@ -12,6 +12,20 @@ export const getProfileById = async (userId: string): Promise<UserProfile | null
   return data ? mapProfile(data) : null;
 };
 
+export const getCurrentProfile = async (): Promise<UserProfile | null> => {
+  if (!supabase) {
+    return mockUsers[0] || null;
+  }
+
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData.user) {
+    if (authError) throw authError;
+    return null;
+  }
+
+  return getProfileById(authData.user.id);
+};
+
 export const getHostProfileByUserId = async (userId: string): Promise<HostProfile | null> => {
   if (!supabase) {
     return mockHostProfiles.find((host) => host.userId === userId) || null;
@@ -43,7 +57,7 @@ const mapProfile = (row: Record<string, unknown>): UserProfile => ({
   phone: row.whatsapp_number ? String(row.whatsapp_number) : undefined,
   city: String(row.city || ""),
   avatarUrl: row.avatar_url ? String(row.avatar_url) : undefined,
-  roles: Array.isArray(row.roles) ? row.roles as UserProfile["roles"] : ["creador"],
+  roles: Array.isArray(row.roles) ? row.roles as UserProfile["roles"] : [String(row.role || "creador") as UserProfile["roles"][number]],
   verificationStatus: row.verification_status as UserProfile["verificationStatus"],
   whatsappConnected: Boolean(row.whatsapp_connected),
   createdAt: String(row.created_at || ""),
@@ -62,12 +76,12 @@ const mapHostProfile = (row: Record<string, unknown>): HostProfile => ({
 const toProfileRow = (profile: UserProfile) => ({
   id: profile.id,
   full_name: profile.fullName,
+  username: profile.email.split("@")[0],
   email: profile.email,
   whatsapp_number: profile.phone,
   city: profile.city,
-  avatar_url: profile.avatarUrl,
-  roles: profile.roles,
+  avatar_url: profile.avatarUrl || null,
+  role: profile.roles[0] || "creador",
   verification_status: profile.verificationStatus,
   whatsapp_connected: profile.whatsappConnected,
 });
-

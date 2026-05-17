@@ -39,7 +39,9 @@ create table public.profiles (
   whatsapp_connected boolean not null default false,
   document_type text,
   document_last4 text,
+  username text,
   avatar_url text,
+  role user_role not null default 'creador',
   roles user_role[] not null default array['creador']::user_role[],
   verification_status verification_status not null default 'pending',
   created_at timestamptz not null default now(),
@@ -47,10 +49,11 @@ create table public.profiles (
 );
 
 create index profiles_city_idx on public.profiles(city);
+create index profiles_role_idx on public.profiles(role);
 create index profiles_roles_idx on public.profiles using gin(roles);
 ```
 
-Private fields: `email`, `whatsapp_number`, `document_type`, `document_last4`.
+Private fields: `email`, `whatsapp_number`, `document_type`, `document_last4`. The current frontend writes `role` for the first integration phase and reads either `role` or `roles`; keep `roles` available for dual-role support.
 
 ## host_profiles
 
@@ -431,4 +434,3 @@ on public.admin_reports for all
 using (public.is_admin())
 with check (public.is_admin());
 ```
-

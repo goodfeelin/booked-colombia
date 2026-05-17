@@ -3,7 +3,7 @@ import { Search, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getMockUser } from "@/lib/mockAuth";
+import { useBookedAuth } from "@/hooks/useBookedAuth";
 
 const links = [
   { to: "/browse", label: "Explorar" },
@@ -14,21 +14,12 @@ const links = [
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [authed, setAuthed] = useState(() => Boolean(getMockUser()));
+  const { isAuthenticated } = useBookedAuth();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  useEffect(() => {
-    const update = () => setAuthed(Boolean(getMockUser()));
-    window.addEventListener("storage", update);
-    window.addEventListener("booked-auth-change", update);
-    return () => {
-      window.removeEventListener("storage", update);
-      window.removeEventListener("booked-auth-change", update);
-    };
   }, []);
 
   return (
@@ -83,8 +74,8 @@ export const Navbar = () => {
                 <Sparkles size={14} /> Publicar espacio
               </Button>
             </Link>
-            <Link to={authed ? "/profile" : "/auth"} className="hidden sm:block">
-              <Button variant="hero" size="sm">{authed ? "Perfil" : "Ingresar"}</Button>
+            <Link to={isAuthenticated ? "/profile" : "/auth"} className="hidden sm:block">
+              <Button variant="hero" size="sm">{isAuthenticated ? "Perfil" : "Ingresar"}</Button>
             </Link>
           </div>
         </div>

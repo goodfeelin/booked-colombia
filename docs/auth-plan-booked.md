@@ -11,7 +11,8 @@ Booked should feel like a premium marketplace while keeping trust and safety rea
   - `id = auth.users.id`
   - `full_name`
   - `email`
-  - default `roles = ['creador']`
+  - default `role = 'creador'`
+  - optional `roles = ['creador']` for dual-role support
   - `verification_status = 'pending'`
   - `whatsapp_connected = false`
 - Keep profile creation idempotent. A retry should upsert the same profile instead of failing.
@@ -30,7 +31,7 @@ Booked should feel like a premium marketplace while keeping trust and safety rea
 
 ## Roles
 
-Roles live on `profiles.roles` as a `user_role[]` array:
+The first integration writes `profiles.role` as the primary role. For dual-role support, keep `profiles.roles` as a `user_role[]` array and read both fields in the app.
 
 - `creador`: can browse, favorite, request bookings, message booking participants, and review completed collaborations.
 - `anfitrion`: can create host profile, publish locaciones, manage availability, accept/decline bookings, message booking participants, and receive payouts.
@@ -52,7 +53,7 @@ A user can be both `creador` and `anfitrion`. This is important for Colombian cr
 
 1. Signup or login.
 2. Create profile if missing.
-3. Add `anfitrion` to `profiles.roles`.
+3. Set `profiles.role = 'anfitrion'` and add `anfitrion` to `profiles.roles` when dual-role support is enabled.
 4. Create `host_profiles` row with `verification_status = 'pending'`.
 5. Route to `/host/new`.
 6. Listing remains `draft` or `pending_review` until admin approval.
@@ -60,7 +61,7 @@ A user can be both `creador` and `anfitrion`. This is important for Colombian cr
 ### Existing user adding host mode
 
 1. User chooses `Publicar espacio`.
-2. If authenticated, add `anfitrion` role if missing.
+2. If authenticated, set host role state if missing.
 3. Create `host_profiles` row if missing.
 4. Continue to host onboarding.
 
@@ -126,4 +127,3 @@ Rejected and retry states should show practical next steps. Do not use theatrica
 - Booking participants coordinate inside Booked messages.
 - Exact address becomes visible only after booking confirmation.
 - Admins can review contact-sharing reports later through `admin_reports`.
-
