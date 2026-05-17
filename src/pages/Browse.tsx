@@ -103,7 +103,7 @@ const Browse = () => {
             <p className="text-muted-foreground mt-1">Espacios para todos los presupuestos creativos.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <select value={sort} onChange={(e) => update("sort", e.target.value)} className="h-11 max-w-full px-4 rounded-full glass border-white/10 text-sm font-medium">
+            <select value={sort} onChange={(e) => update("sort", e.target.value)} className="h-11 max-w-full px-4 rounded-full field-surface text-sm font-medium">
               <option value="featured">Destacadas</option>
               <option value="price-asc">Precio: menor a mayor</option>
               <option value="price-desc">Precio: mayor a menor</option>
@@ -162,7 +162,7 @@ const Browse = () => {
               <div className="text-sm text-muted-foreground mt-1">Hasta ${(max || 600000).toLocaleString("es-CO")} COP / h</div>
             </FilterGroup>
             <FilterGroup label="Crew mínimo">
-              <input type="number" min={1} value={crew || ""} onChange={(e) => update("crew", e.target.value)} className="h-11 w-full px-4 rounded-2xl glass border-white/10 bg-white/5" placeholder="Ej: 10" />
+              <input type="number" min={1} value={crew || ""} onChange={(e) => update("crew", e.target.value)} className="h-11 w-full px-4 rounded-2xl field-surface" placeholder="Ej: 10" />
             </FilterGroup>
             <FilterGroup label="Amenidades">
               <div className="flex flex-wrap gap-2">

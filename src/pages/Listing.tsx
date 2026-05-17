@@ -252,7 +252,7 @@ const Listing = () => {
   );
 };
 
-const inp = "mt-1 w-full h-11 px-4 rounded-2xl bg-white/5 border border-white/10 text-foreground outline-none focus:border-cobalt transition-colors";
+const inp = "mt-1 w-full h-11 px-4 rounded-2xl field-surface text-foreground outline-none";
 
 const Detail = ({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) => (
   <div className="p-4 rounded-2xl widget min-w-0">

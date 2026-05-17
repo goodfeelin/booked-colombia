@@ -70,7 +70,7 @@ const Messages = () => {
         <div className="grid lg:grid-cols-[360px_1fr] gap-4 min-h-[72vh] rounded-[2rem] widget overflow-hidden">
           <aside className="border-b lg:border-b-0 lg:border-r border-white/10 min-w-0">
             <div className="p-4 border-b border-white/10">
-              <div className="flex items-center gap-2 px-3 h-11 rounded-full bg-white/5 border border-white/10">
+              <div className="flex items-center gap-2 px-3 h-11 rounded-full field-surface">
                 <Search size={14} className="text-muted-foreground shrink-0" />
                 <input placeholder="Buscar mensajes" className="bg-transparent outline-none text-sm w-full min-w-0" />
               </div>
@@ -150,7 +150,7 @@ const Messages = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Escribe dentro de Booked..."
-                className="min-w-0 flex-1 h-12 px-4 rounded-full bg-white/5 border border-white/10 outline-none focus:border-cobalt text-foreground"
+                className="min-w-0 flex-1 h-12 px-4 rounded-full field-surface outline-none text-foreground"
               />
               <Button type="submit" variant="hero" size="icon" aria-label="Enviar"><Send size={16} /></Button>
             </form>

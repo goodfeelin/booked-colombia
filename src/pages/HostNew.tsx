@@ -308,7 +308,7 @@ const HostNew = () => {
   );
 };
 
-const inp = "w-full h-11 px-4 rounded-2xl bg-white/5 border border-white/10 text-foreground outline-none focus:border-cobalt transition-colors";
+const inp = "w-full h-11 px-4 rounded-2xl field-surface text-foreground outline-none";
 
 const Step = ({ title, copy, children }: { title: string; copy: string; children: React.ReactNode }) => (
   <div className="space-y-5">
@@ -360,7 +360,7 @@ const AvailabilityPreview = ({ selectedDays }: { selectedDays: string[] }) => (
 );
 
 const ReviewItem = ({ label, value }: { label: string; value: string }) => (
-  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 min-w-0">
+  <div className="p-4 rounded-2xl field-surface min-w-0">
     <dt className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</dt>
     <dd className="mt-1 font-medium break-words">{value || <span className="text-muted-foreground">Pendiente</span>}</dd>
   </div>

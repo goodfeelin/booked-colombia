@@ -78,7 +78,7 @@ const Auth = () => {
 };
 
 const Field = ({ icon: Icon, ...props }: { icon: LucideIcon } & React.InputHTMLAttributes<HTMLInputElement>) => (
-  <label className="flex items-center gap-3 h-12 px-4 rounded-2xl bg-white/5 border border-white/10 focus-within:border-cobalt transition-colors">
+  <label className="flex items-center gap-3 h-12 px-4 rounded-2xl field-surface">
     <Icon size={16} className="text-muted-foreground" />
     <input {...props} className="bg-transparent outline-none w-full text-sm text-foreground placeholder:text-muted-foreground" />
   </label>

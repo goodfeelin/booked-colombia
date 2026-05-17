@@ -186,7 +186,7 @@ const Checkout = () => {
   );
 };
 
-const inp = "w-full max-w-full h-11 px-4 rounded-2xl bg-white/5 border border-white/10 text-foreground outline-none focus:border-cobalt transition-colors";
+const inp = "w-full max-w-full h-11 px-4 rounded-2xl field-surface text-foreground outline-none";
 const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="rounded-3xl widget p-6">
     <h2 className="font-display text-xl font-semibold mb-4">{title}</h2>
@@ -204,7 +204,7 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 );
 
 const Info = ({ label, value }: { label: string; value: string }) => (
-  <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+  <div className="rounded-2xl field-surface p-4">
     <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</div>
     <div className="font-semibold mt-1">{value}</div>
   </div>

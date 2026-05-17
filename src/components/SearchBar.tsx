@@ -67,7 +67,7 @@ const inputCls = "bg-transparent outline-none w-full text-sm font-semibold text-
 const selectCls = inputCls + " appearance-none cursor-pointer";
 
 const Field = ({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) => (
-  <label className="rounded-2xl px-4 py-2.5 bg-white/5 hover:bg-white/8 border border-white/8 transition-colors cursor-text flex flex-col justify-center min-w-0">
+  <label className="rounded-2xl px-4 py-2.5 field-surface cursor-text flex flex-col justify-center min-w-0">
     <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground inline-flex items-center gap-1.5 font-semibold">
       {icon}{label}
     </span>
